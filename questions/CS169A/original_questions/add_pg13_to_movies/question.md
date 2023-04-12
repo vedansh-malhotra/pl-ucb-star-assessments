@@ -1,6 +1,6 @@
-# From S15 quiz 1
+# Add and validate a field on the RottenPotatoes Movie model
 
-The MPAA rating PG-13 was introduced in 1984.  Enhance the Movie class to check that the "PG-13" rating is only accepted as valid if the movie was released on or after 1/1/1984.
+The MPAA rating PG-13 was introduced in 1984.  Enhance the Movie class to check that the "PG-13" rating is only accepted as valid if the movie was released on or after 1-Jan-1984.
 
 Recall that:
 
@@ -16,9 +16,9 @@ NOT ALL BLANKS MAY NEED TO BE FILLED IN, but you shouldn't need to add any blank
 class Movie < ActiveRecord::Base
   _____________
   validate :rating_consistent_with_date
-  def ____________ ( ____ )
-    pg13_invented = Time.parse "1/1/1984"
-    if ____________________
+  def ____________()
+    pg13_invented = Time.parse "1 Jan 1984"
+    if (____________________) and (______________)
        __________.errors.add(:rating, 'only valid for 1984 and later')
     end
     _______________
@@ -26,16 +26,3 @@ class Movie < ActiveRecord::Base
 end
 ```
 
-## Solution:
-
-```ruby
-class Movie < ActiveRecord::Base
-  validate :rating_consistent_with_date
-  def rating_consistent_with_date 
-    pg13_invented = Time.parse "1/1/1984"
-    if pg13_invented > self.release_date and self.rating == ‘PG-13’
-       self.errors.add(:rating, 'only valid for 1984 and later')
-    end
-  end
-end
-```
