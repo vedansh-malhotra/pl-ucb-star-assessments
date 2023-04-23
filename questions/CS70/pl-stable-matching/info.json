@@ -4,6 +4,5 @@
     "topic": "StableMatching",
     "tags": ["Sp23"],
     "type": "v3",
-    "gradingMethod":"Internal",
-    "showCorrectAnswer":false
+    "gradingMethod":"Internal"
 }
