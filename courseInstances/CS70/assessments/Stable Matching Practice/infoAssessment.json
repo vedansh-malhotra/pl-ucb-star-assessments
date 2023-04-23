@@ -14,7 +14,7 @@
     "zones": [{
         "title": "Practice",
         "questions": [
-            {"id": "CS70/pl-stable-matching", "autoPoints": 10, "triesPerVariant":99999, "maxAutoPoints":5000}
+            {"id": "CS70/pl-stable-matching", "points": 10, "triesPerVariant":99999, "maxPoints":5000}
         ]
     }]
 }
