@@ -3,11 +3,6 @@
     "longName": "CS70",
     "allowAccess": [
         {
-            "institution": "LTI",
-            "startDate": "2023-03-24T00:00:01",
-            "endDate": "2023-06-01T23:59:59"
-        },
-        {
             "institution": "Any",
             "startDate": "2023-03-22T00:00:01",
             "endDate": "2023-06-01T23:59:59",
