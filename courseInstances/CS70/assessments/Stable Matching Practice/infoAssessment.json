@@ -3,7 +3,6 @@
     "type": "Homework",
     "title": "Stable Matching Practice",
     "set": "Homework",
-    "maxPoints": 5000,
     "shuffleQuestions": false,
     "number": "1",
     "allowAccess": [
@@ -15,7 +14,7 @@
     "zones": [{
         "title": "Practice",
         "questions": [
-            {"id": "pl-stable-matching", "autoPoints": 10, "triesPerVariant":99999, "maxAutoPoints":5000}
+            {"id": "CS70/pl-stable-matching", "autoPoints": 10, "triesPerVariant":99999, "maxAutoPoints":5000}
         ]
     }]
 }
