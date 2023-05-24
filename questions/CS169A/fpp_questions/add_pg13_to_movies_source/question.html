@@ -17,13 +17,13 @@ Recall that:
 
 <!-- see README for where the various parts of question live -->
 <pl-faded-parsons>
-class Movie < ActiveRecord::Base
-  validate :rating_consistent_with_date
-  def !BLANK()
-    pg13_invented = Time.parse "1 Jan 1984"
-    if (!BLANK) and (!BLANK)
-        !BLANK.errors.add(:rating, 'only valid for 1984 and later')
+  class Movie < ActiveRecord::Base
+    validate :rating_consistent_with_date
+    def !BLANK()
+      pg13_invented = Time.parse "1 Jan 1984"
+      if (!BLANK) and (?self.rating == 'PG-13'?)
+         !BLANK.errors.add(:rating, 'only valid for 1984 and later')
+      end
     end
   end
-end
 </pl-faded-parsons>

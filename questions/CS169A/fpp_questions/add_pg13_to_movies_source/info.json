@@ -1,5 +1,5 @@
 {
-    "uuid": "a998cddc-f107-4d54-bf63-d97c63ef6bcc",
+    "uuid": "bfb8572c-886f-4778-b435-db9b1a45d4c3",
     "title": "Add Pg13 To Movies Source",
     "topic": "",
     "tags": [
@@ -10,7 +10,7 @@
     "gradingMethod": "External",
     "externalGradingOptions": {
         "enabled": true,
-        "image": "nalsoon/ruby-autograder",
+        "image": "saasbook/pl-fpp-ruby-autograder",
         "entrypoint": "/grader/run.py",
         "timeout": 30
     }

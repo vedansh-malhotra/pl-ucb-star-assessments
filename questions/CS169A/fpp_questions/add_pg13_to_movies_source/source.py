@@ -25,7 +25,7 @@ class Movie < ActiveRecord::Base
 end
 
 ## tests/app/script.rb ##
-# require 'active_support/core_ext/time'
+require 'active_support/core_ext/time'
 module ActiveRecord
   class Base
     class Errors
@@ -72,7 +72,7 @@ describe 'movie validation' do
   end
 end
 # load student code here...defines Movie as subclass of fake AR::Base
-load './add_pg13_to_movies.rb'
+# load './add_pg13_to_movies.rb'
 
 ## test ##
 
