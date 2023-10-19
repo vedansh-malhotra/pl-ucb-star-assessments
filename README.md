@@ -1,28 +1,40 @@
-# Welcome!  New here?
+# STAR Assessments course repo
 
-If you're new, please use this repo's [wiki](https://github.com/ace-lab/pl-ucb-csxxx/wiki)
-to get started!
+Please check out the [csxxx wiki](https://github.com/ace-lab/pl-ucb-csxxx/wiki)
+for basic PrairieLearn mechanics etc.
 
-# Using this repo as a template to make a new course?
+Here's where to put your stuff.  In the examples below, substitute a
+name/moniker for your course in place of "CS999".
 
-If you are using this repo as a template to make your own course
-(highly recommended), your course repo's name should be `pl-SSS-CCC`, 
-where `SSS` is your project
-institution name (`ucb`, `csulb`, `ecc`) and `CCC` is the lowercase course
-number at your institution (eg `pl-ucb-cs169a`, `pl-ecc-csci8`, etc).
-    
-Once you have your repo established, you should immediately do the following:
+**Remember:** it's fine to copy boilerplate files from other
+directories, but **every PL item has a unique UID (uuid)** and you
+have to change those.  You can generate UUIDs with the shell command `uuidgen`.
 
-* Create a team that is a child of `pl-dev` and is named
-`pl-dev-SSS-CCC` (like the repo name; eg for `pl-ucb-cs169`, the
-team name should be `pl-dev-ucb-cs169`) that has Read/Write access
-to your repo, and add the course staff to it
-* Delete the `elements` subdirectory, unless you specifically want to use
-the custom elements in here (see below for some documentation)
-* Delete the contents of `serverFilesCourse` and `clientFilesCourse`
-* Delete the contents of `courseInstances` (you'll add your own
-later)
-* Delete the contents of `questions/`, which will be replaced with
-your course's questions
-* Immediately update this `README.md` and `infoCourse.json` to
-reflect the info for your course
+## Create and git add the directory `courseInstances/CS999`
+
+In it you'll need a minimal `infoCourseInstance.json`, which you can
+base on an existing one.
+
+## Create and add `questions/CS999/`
+
+This is where your example question(s) will go.
+
+## If you're building an element, create and add `elements/pl-*`....
+
+...where * is whatever your element name is.
+
+**At this point**, all of your work should be able to go into either a
+question subdirectory or the single element subdirectory.  If you find
+yourself in a situation where you have code that doesn't belong in
+either of those places, ask us.  The reason is to keep each project
+standalone: it should be possible for an instructor to use the project
+simply by copying any `questions/CS999/` subdirectories and optionally
+any element subdirectories, nothing else.
+
+## Develop on a branch
+
+To avoid lots of merge collisions, it's best to develop on a branch
+and use that branch for local testing.  At the end of the semester, we
+can merge your branch to `master` if you open a PR.  Note that the PR
+should **only** result in changes to `questions/CS999/` and possibly
+to your element subdirs.
