@@ -38,3 +38,9 @@ and use that branch for local testing.  At the end of the semester, we
 can merge your branch to `master` if you open a PR.  Note that the PR
 should **only** result in changes to `questions/CS999/` and possibly
 to your element subdirs.
+
+## Packaging milestone
+
+You've achieved the packaging milestone when you can render one
+question (even if grading doesn't fully work yet) that has its files
+placed as described above.
