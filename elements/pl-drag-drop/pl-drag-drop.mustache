@@ -1,9 +1,15 @@
 {{#question}}
+  <p> Consider the following dataframe:</p>
   {{{frame_html}}}
-  <input id="{{answer_name}}-input" type="hidden" name="{{answer_name}}-input" value="this is it!"/>
 
+  <p> What will be the value of the dataframe after running the following code:</p>
+  <pl-code language="python">
+  {{{operation}}}
+  </pl-code>
+
+  <input id="{{dataframe_name}}-input" type="hidden" name="{{dataframe_name}}-input" value="this is empty"/>
   <script>
-    var answer_name = "{{answer_name}}";
+    var dataframe_name = "{{dataframe_name}}";
   </script>
 {{/question}}
 

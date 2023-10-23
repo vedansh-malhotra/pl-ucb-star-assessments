@@ -1,4 +1,8 @@
 $(function() {
+    var x = document.getElementsByClassName("dataframe");
+    var id_answer_name = '#' + dataframe_name + '-input';
+    $(id_answer_name).val(x[0].outerHTML);
+
     $(".dataframe tbody tr").draggable({
         helper: "clone",
         opacity: 0.5,
@@ -24,9 +28,11 @@ $(function() {
 
             const thElements = document.querySelectorAll('th');
             const tdElements = document.querySelectorAll('td');
+
             
+            //input will takes one additional element at the end
             var x = document.getElementsByClassName("dataframe");
-            var id_answer_name = '#' + answer_name + '-input';
+            var id_answer_name = '#' + dataframe_name + '-input';
             $(id_answer_name).val(x[0].outerHTML);
         }
     });
