@@ -1,5 +1,0 @@
-<pl-question-panel>
-    <pl-drag-drop dataframe-name="df-ex">
-    Write operation here
-    </pl-drag-drop>
-</pl-question-panel>
