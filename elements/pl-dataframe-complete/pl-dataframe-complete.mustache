@@ -3,10 +3,10 @@
     <pl-dataframe params-name="input_df" show-dimensions="false" digits="4"></pl-dataframe>
     <p> What will be the value of the dataframe after running the following code:</p>
     <pl-code language="python">{{pivot_code}}</pl-code>
-    <pl-dataframe params-name="columns" show-dimensions="false" show-index="false" show-header="false" digits="4"></pl-dataframe>
-    <pl-dataframe params-name="index" show-dimensions="false" show-index="false" show-header="false" digits="4"></pl-dataframe>
+    <pl-dataframe-piece params-name="columns" show-dimensions="false" show-index="false" show-header="false" digits="4"></pl-dataframe-piece >
+    <pl-dataframe-piece  params-name="index" show-dimensions="false" show-index="false" show-header="false" digits="4"></pl-dataframe-piece >
     <p>The actual answer is: </p>
-    <pl-dataframe params-name="pivoted_df" show-dimensions="false" digits="4"></pl-dataframe>
+    <pl-dataframe-piece  params-name="pivoted_df" show-dimensions="false" digits="4"></pl-dataframe-piece >
      <p>Distractor is: </p>
-    <pl-dataframe params-name="distractor_df" show-dimensions="false" digits="4"></pl-dataframe>
+    <pl-dataframe-piece  params-name="distractor_df" show-dimensions="false" digits="4"></pl-dataframe-piece >
 </div>

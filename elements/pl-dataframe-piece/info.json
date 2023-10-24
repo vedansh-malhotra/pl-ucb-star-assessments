@@ -1,0 +1,6 @@
+{
+  "controller": "pl-dataframe-piece.py",
+  "dependencies": {
+    "elementStyles": ["pl-dataframe-piece.css"]
+  }
+}
