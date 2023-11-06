@@ -5,6 +5,27 @@ import pandas as pd
 import prairielearn as pl
 from bs4 import BeautifulSoup
 
+def prepare(element_html: str, data: pl.QuestionData):
+    element = lxml.html.fragment_fromstring(element_html)
+    dataframe_name = pl.get_string_attrib(element, 'dataframe-name')
+    num_col = pl.get_string_attrib(element, 'col')
+    num_col = int(num_col)
+    
+    num_row = pl.get_string_attrib(element, 'row')
+    num_row = int(num_row)
+    operation = element.text_content()
+    
+    ROW = ["Row" + str(i) for i in range(1,num_col+1)]
+    COL = {"Column" + str(i) :ROW for i in range(1,num_row+1)}
+    
+    global df
+    df = pd.DataFrame(COL)
+    data['params'][dataframe_name] = pl.to_json(df)
+    
+    exec(operation,globals())
+    exec("ANSWER = " + dataframe_name,globals())
+    data['params']['correct_answers'] = pl.to_json(ANSWER)
+
 
 def render(element_html: str, data: pl.QuestionData) -> str:
 
@@ -40,6 +61,7 @@ def grade(element_html: str, data: pl.QuestionData):
     #Load answer dataframe from parameters and parse into bs4
     answer_frame = pl.from_json(data['params']['correct_answers'])
     answer_frame = cast(pd.DataFrame, answer_frame)
+
     html_answer = answer_frame.to_html()
     soup_answer = BeautifulSoup(html_answer)
     soup_answer.find('tbody').find_all('tr')
@@ -57,7 +79,6 @@ def grade(element_html: str, data: pl.QuestionData):
     lst_sumbitted = [lst_sumbitted[i].text for i in range(1,1+len_col)]
     lst_answer = soup_answer.find('thead').find_all('th')
     lst_answer = [lst_answer[i].text for i in range(1,1+len_col)]
-    
     
     if (lst_sumbitted == lst_answer) and (answer == submitted):
         score = 1

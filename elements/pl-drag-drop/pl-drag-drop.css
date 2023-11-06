@@ -1,18 +1,17 @@
-/** Stylesheet for the puzzles */
 .table {
     border-collapse: collapse;
     width: 100%;
     margin-top: 20px;
 }
-.table, th, td {
+.dataframe-container .table, th, td {
     border: 1px solid black;
     padding: 8px;
     text-align: center;
 }
-.th {
+.dataframe-container th {
     background-color: #f2f2f2;
     cursor: pointer;
 }
-.tbody tr:nth-child(even) {
+.dataframe-container > tbody tr:nth-child(even) {
     background-color: #f2f2f2;
 }

@@ -1,7 +1,7 @@
 <pl-question-panel>
-    <pl-drag-drop dataframe-name="df-ex">
-    cols = df.columns.to_list()
-    new_cols = cols[1:] + [cols[0]]
-    df[new_cols]
-    </pl-drag-drop>
+<pl-drag-drop dataframe-name="answer_df" row="5" col="5">
+cols = df.columns.to_list()
+new_cols = cols[1:] + [cols[0]]
+answer_df = df[new_cols]
+</pl-drag-drop>
 </pl-question-panel>

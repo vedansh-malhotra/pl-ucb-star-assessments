@@ -1,15 +1,11 @@
 {{#question}}
-  <p> Consider the following dataframe:</p>
-  {{{frame_html}}}
+{{{frame_html}}}
+<p> Drag and drop the columns or rows so that the shape of dataframe looks like "answer_df"</p>
+<pl-code language="python">{{{operation}}}</pl-code>
 
-  <p> What will be the value of the dataframe after running the following code:</p>
-  <pl-code language="python">
-  {{{operation}}}
-  </pl-code>
-
-  <input id="{{dataframe_name}}-input" type="hidden" name="{{dataframe_name}}-input" value="this is empty"/>
-  <script>
-    var dataframe_name = "{{dataframe_name}}";
-  </script>
+<input id="{{dataframe_name}}-input" type="hidden" name="{{dataframe_name}}-input" value="this is empty"/>
+<script>
+  var dataframe_name = "{{dataframe_name}}";
+</script>
 {{/question}}
 

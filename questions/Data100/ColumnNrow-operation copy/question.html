@@ -1,8 +1,9 @@
 <pl-question-panel>
-    <pl-drag-drop dataframe-name="df-ex">
-    cols = df.columns.to_list()
-    new_cols = cols[1:] + [cols[0]]
-    df[new_cols]
-    df.reindex([1,2,3,4,0])
-    </pl-drag-drop>
+<pl-drag-drop dataframe-name="answer_df" col="5" row="5">
+cols = df.columns.to_list()
+new_cols = cols[1:] + [cols[0]]
+answer_df = df[new_cols]
+answer_df = df.reindex([1,2,3,4,0])
+</pl-drag-drop>
 </pl-question-panel>
+
