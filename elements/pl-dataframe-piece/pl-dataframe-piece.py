@@ -159,7 +159,7 @@ def render(element_html: str, data: pl.QuestionData) -> str:
         frame_style.hide()
 
     # Might be worth moving everything out of the CSS file and handle it all with the builtin styler.
-    frame_style.set_table_attributes("class=pl-dataframe-table")
+    frame_style.set_table_attributes("class=pl-dataframe-table-piece")
 
     html_params = {
         "uuid": pl.get_uuid(),

@@ -1,3 +1,10 @@
 .pl-dataframe-complete-element .big {
   font-size: 20px;
 }
+
+.answer_table,
+.answer_table thead,
+.answer_table tbody
+ {
+  border: 1px solid black;
+}
