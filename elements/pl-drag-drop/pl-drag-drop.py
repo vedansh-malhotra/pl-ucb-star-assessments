@@ -65,6 +65,7 @@ def grade(element_html: str, data: pl.QuestionData):
     html_answer = answer_frame.to_html()
     soup_answer = BeautifulSoup(html_answer)
     soup_answer.find('tbody').find_all('tr')
+    #scoping
         
     #Check whether columns are correct
     len_row = len(answer_frame.index)
