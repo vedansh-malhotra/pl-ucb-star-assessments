@@ -4,15 +4,6 @@
     margin-top: 50px;
 }
 
-.card:active {
-    cursor: grabbing;
-}
-
-.card.dragging {
-    opacity: .5;
-    transform: scale(.8);
-}
-
 .card.col {
     float: left;
     width: 100px
@@ -56,6 +47,16 @@
     display: inline-block;
 }
 
+.col-card:active {
+    cursor: grabbing;
+}
+
+.col-card.dragging {
+    cursor: grabbing;
+    opacity: .5;
+    transform: scale(.8);
+}
+
 .col-article{
     background: #3F4447;
     border-radius: 3px;
@@ -63,7 +64,17 @@
     width: 80%;
     height: 20%;
     cursor: grab;
-    display: flex;
+    display: inline-block;
+}
+
+.col-article:active {
+    cursor: grabbing;
+}
+
+.col-article.dragging {
+    cursor: grabbing;
+    opacity: .5;
+    transform: scale(.8);
 }
 
 .segment{
@@ -76,6 +87,7 @@
 }
 
 h3 {
+    color: white;
     font-size: 21px;
     font-family: Helvetica;
     margin: 0;
