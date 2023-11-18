@@ -90,9 +90,27 @@ $(document).ready(function() {
             })
 
         }
-    });
-
-        
-    
+    });    
     
 });
+
+
+function reset() {
+    let cols = document.querySelectorAll(".drop-col");
+    let indice = document.querySelectorAll(".drop-index");
+    let rows = document.querySelectorAll(".drop-row");
+    cols.forEach(ele => {
+        $(ele).removeClass('dropped-color-col');
+        ele.textContent = "Column";
+    })
+
+    indice.forEach(ele => {
+        $(ele).removeClass('dropped-color-index');
+        ele.textContent = "Index";
+    })
+
+    rows.forEach(ele => {
+        $(ele).removeClass('dropped-color-row');
+        ele.textContent = "\u00A0";
+    })
+}

@@ -31,7 +31,7 @@ margin-bottom: 40px;
 border-style: solid;
 }
 
-.drop-col{
+.drop-col, .drop-index, .drop-row{
 border-style: solid;
 border-color: rgb(28, 28, 28);
 background-color: #ffffff;
@@ -47,4 +47,8 @@ background-color: #ffffff;
 
 .dropped-color-col{
     background-color: #aeaeae;
+}
+
+.reset-button{
+    margin-top: 20px;
 }
