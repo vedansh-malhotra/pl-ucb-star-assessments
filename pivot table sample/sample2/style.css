@@ -1,0 +1,50 @@
+.column-box {
+border-style: solid;
+margin-bottom: 40px;
+}
+.col-set{
+margin-bottom: 5px;
+cursor: grab;
+}
+.my-col{
+border-style: solid;
+border-color: rgb(28, 28, 28);
+background-color: #bec0bf;
+}
+
+.index-box{
+border-style: solid;
+margin-bottom: 40px;
+}
+
+.index{
+margin-right: 10px;
+cursor: grab;
+}
+
+.row-box{
+border-style: solid;
+margin-bottom: 40px;
+}
+
+.drop-zone{
+border-style: solid;
+}
+
+.drop-col{
+border-style: solid;
+border-color: rgb(28, 28, 28);
+background-color: #ffffff;
+}
+
+.dropped-color-row{
+    background-color: #8989894e;
+}
+
+.dropped-color-index{
+    background-color: #878585;
+}
+
+.dropped-color-col{
+    background-color: #aeaeae;
+}
