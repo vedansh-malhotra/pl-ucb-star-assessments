@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    // Make the table rows and columns draggable
+    //Change selection method in future to specify the current question(uuid)
     $(".col-set").draggable({
         helper: "clone",
         zIndex: 100,
@@ -96,6 +96,7 @@ $(document).ready(function() {
 
 
 function reset() {
+    //Change selection method in future to specify the current question(uuid)
     let cols = document.querySelectorAll(".drop-col");
     let indice = document.querySelectorAll(".drop-index");
     let rows = document.querySelectorAll(".drop-row");

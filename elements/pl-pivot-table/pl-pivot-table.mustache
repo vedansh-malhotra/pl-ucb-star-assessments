@@ -1,81 +1,41 @@
 {{#question}}
+        <script>
+            var uuid = "{{uuid}}";
+            var num_row = parseInt("{{num_row_for_val}}");
+        </script>
         <div class="container column-box">
             <h2>Choose answer column here</h2>
-            <div class="row col-set">
-                <div class="col-md-2 my-col">Item</div>
-                <div class="col-md-2 my-col">A</div>
-                <div class="col-md-2 my-col">B</div>
-                <div class="col-md-2 my-col">C</div>
-                <div class="col-md-2 my-col">D</div>
+            {{#column_set}}
+            <div class="row col-set" id="{{uuid}}" data-order="{{order_col}}">
+                {{#column}}
+                <div class="col-md-2 my-col">{{{inner_html}}}</div>
+                {{/column}}
+                {{#is_ellipsis}}
                 <div class="col-md-2 my-col">...</div>
+                {{/is_ellipsis}}
             </div>
-            <div class="row col-set">
-                <div class="col-md-2 my-col">Item</div>
-                <div class="col-md-2 my-col">X</div>
-                <div class="col-md-2 my-col">Y</div>
-                <div class="col-md-2 my-col">Z</div>
-                <div class="col-md-2 my-col">W</div>
-                <div class="col-md-2 my-col">...</div>
-            </div>
-            <div class="row col-set">
-                <div class="col-md-2 my-col">Item</div>
-                <div class="col-md-2 my-col">1</div>
-                <div class="col-md-2 my-col">2</div>
-                <div class="col-md-2 my-col">3</div>
-                <div class="col-md-2 my-col">4</div>
-                <div class="col-md-2 my-col">...</div>
-            </div>
-            <!--Place more row as the author wants to add choice-->
+            {{/column_set}}
         </div>
 
         <div class="container index-box">
             <h2>Choose answer index here</h2>
             <div class="row">
+                {{#indice_set}}
                 <div class="col-md-2">
-                    <div class="index" draggable="true">
+                    <div class="index" id="{{uuid}}" data-order="{{order_index}}">
+                        {{#index}}
                         <div class="row">
-                            <div class="col-md-12 my-col">Category</div>
+                            <div class="col-md-12 my-col">{{{inner_html}}}</div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">A</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">B</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">C</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">D</div>
-                        </div>
+                        {{/index}}
+                        {{#is_ellipsis}}
                         <div class="row">
                             <div class="col-md-12 my-col">...</div>
                         </div>
+                        {{/is_ellipsis}}
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="index">
-                        <div class="row">
-                            <div class="col-md-12 my-col">Category</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">X</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">Y</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">Z</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">W</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">...</div>
-                        </div>
-                    </div>
-                </div>
-                <!--Place more row as the author wants to add choice-->
+                {{/indice_set}}
             </div>
 
         </div>
@@ -84,186 +44,62 @@
             <h2>Choose answer row here</h2>
             
             <div class="row">
+                {{#row_set}}
                 <div class="col-md-2">
-                    <div class="index">
+                    <div class="index" id="{{uuid}}" data-order="{{order_row}}">
                         <div class="row">
                             <div class="col-md-12 my-col">&nbsp</div>
                         </div>
+                        {{#row}}
                         <div class="row">
-                            <div class="col-md-12 my-col">21</div>
+                            <div class="col-md-12 my-col">{{{inner_html}}}</div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">17</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">24</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">53</div>
-                        </div>
+                        {{/row}}
+                        {{#is_ellipsis}}
                         <div class="row">
                             <div class="col-md-12 my-col">...</div>
                         </div>
+                        {{/is_ellipsis}}
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="index">
-                        <div class="row">
-                            <div class="col-md-12 my-col">&nbsp</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">21</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">22</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">22</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">22</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 my-col">...</div>
-                        </div>
-                    </div>
-                </div>
+                {{/row_set}}
             </div>
         </div>
 
         <div class="container drop-zone">
             <div class="row drop-zone-col">
+                    {{#num_col}}
                     <div class="col-md-2 drop-col">Column</div>
-                    <div class="col-md-2 drop-col">Column</div>
-                    <div class="col-md-2 drop-col">Column</div>
-                    <div class="col-md-2 drop-col">Column</div>
-                    <div class="col-md-2 drop-col">Column</div>
-                    <div class="col-md-2 drop-col">Column</div>
+                    {{/num_col}}
             </div>
             <div class="row">
                 <div class="col-md-2 drop-zone-index">
+                    {{#num_row}}
                     <div class="row">
-                        <div class="col-md-12 drop-col">Index</div>
+                        <div class="col-md-12 drop-index">Index</div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">Index</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">Index</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">Index</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">Index</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">Index</div>
-                    </div>
+                    {{/num_row}}
                 </div>
-                <div class="col-md-2 drop-zone-row">
+                {{#num_col_row}}
+                <div class="col-md-2 drop-zone-row" order={{order_col}}>
+                    {{#num_row}}
                     <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
+                        <div class="col-md-12 drop-row">&nbsp</div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
+                    {{/num_row}}
                 </div>
-                <div class="col-md-2 drop-zone-row">
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                </div>
-                <div class="col-md-2 drop-zone-row">
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                </div>
-                <div class="col-md-2 drop-zone-row">
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                </div>
-                <div class="col-md-2 drop-zone-row">
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 drop-col">&nbsp</div>
-                    </div>
-                </div>
+                {{/num_col_row}}
             </div>
         </div>
 
-        <input id="{{dataframe_name}}-input" type="hidden" name="{{dataframe_name}}-input" value="this is empty"/>
+        <input id="{{uuid}}-input" type="hidden" name="{{uuid}}-input" value="{&quot;inner_html&quot;:null,&quot;index&quot;:null}"/>
+
+        <div class="container reset-button">
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="bg-primary text-white" type="button" id="unique">Reset dataframe</button>
+                </div>
+            </div>
+        </div>
 {{/question}}
 
