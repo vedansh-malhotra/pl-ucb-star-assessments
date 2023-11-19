@@ -1,2 +1,0 @@
-<pl-pivot-table dataset='A' index='Category' columns='Item' values='Value'>
-</pl-pivot-table>
