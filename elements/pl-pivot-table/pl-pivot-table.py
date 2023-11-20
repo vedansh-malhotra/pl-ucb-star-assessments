@@ -9,9 +9,25 @@ from bs4 import BeautifulSoup
 
 def prepare(element_html, data):
     soup = BeautifulSoup(element_html)
-    data['params']['num_col'] = soup.find('pl-pivot-table')['col']
-    data['params']['num_row'] = soup.find('pl-pivot-table')['row']
+    
+    num_col = int(soup.find('pl-pivot-table')['col'])
+    if num_col < 2:
+        print("Invalid column number")
+    data['params']['num_col'] = num_col
+    
+    num_row = int(soup.find('pl-pivot-table')['row'])
+    if num_row < 1:
+        print("Invalid row number")
+    data['params']['num_row'] = num_row
+    
+    #num_index won't be refered in this function again, so there is no declaration of it
+    data['params']['num_index'] = int(soup.find('pl-pivot-table')['index'])
+    
     is_ellipsis = soup.find('pl-pivot-table')['ellipsis'] == 'true'
+    is_multicol = soup.find('pl-pivot-table')['multi-col'] == 'true'
+    data['params']['multi_cols'] = is_multicol
+    
+    col_width = {6:'2',5:'2',4:'3',3:'3',2:'3'}
     
     uuid = pl.get_uuid()
     answer_dic = {
@@ -27,9 +43,21 @@ def prepare(element_html, data):
         dic_cols = dict()
         cell_vals = choice.text.split(' ')
         cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
+        
+        condition1 = (is_ellipsis and (len(cell_vals) == (num_col-1))) #With ellipsis, number of columns data should be num_col-1
+        condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_col)))#Without ellipsis, number of columns data should be num_col
+        if not(condition1 or condition2):
+            print("Number of columns should be equal to attribute setting")
+        
+        
         dic_cols['column'] = [{'inner_html':cell_val} for cell_val in cell_vals]
         dic_cols['order_col'] = count
-        dic_cols['is_ellipsis'] = is_ellipsis
+    
+        if is_ellipsis:
+            dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
+        else:
+            dic_cols['is_ellipsis'] = False
+            
         if choice['correct'] == 'true':
             answer_dic['column'].append(count)
             
@@ -43,9 +71,19 @@ def prepare(element_html, data):
         dic_indice = dict()
         cell_vals = choice.text.split(' ')
         cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
+        
+        #Index needs one more text chunk than row, because it has index-label cell
+        condition1 = (is_ellipsis and (len(cell_vals) == (num_row))) #With ellipsis, number of columns data should be num_col
+        condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_row + 1)))#Without ellipsis, number of columns data should be num_col + 1
+        if not(condition1 or condition2):
+            print("Number of indice should be equal to attribute setting")
+        
+        
         dic_indice['index'] = [{'inner_html':cell_val} for cell_val in cell_vals]
         dic_indice['order_index'] = count
         dic_indice['is_ellipsis'] = is_ellipsis
+        
+        
         if choice['correct'] == 'true':
             answer_dic['index'].append(count)
         
@@ -57,9 +95,18 @@ def prepare(element_html, data):
         dic_rows = dict()
         cell_vals = choice.text.split(' ')
         cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
+        
+        condition1 = (is_ellipsis and (len(cell_vals) == (num_row-1))) #With ellipsis, number of columns data should be num_col-1
+        condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_row)))#Without ellipsis, number of columns data should be num_col
+        if not(condition1 or condition2):
+            print("Number of rows should be equal to attribute setting")
+            
+
         dic_rows['row'] = [{'inner_html':cell_val} for cell_val in cell_vals]
         dic_rows['order_row'] = count
         dic_rows['is_ellipsis'] = is_ellipsis
+        
+        
         if choice['correct'] == 'true':
             #which row should be placed in which place
             place = json.loads(choice['place'])
@@ -68,37 +115,83 @@ def prepare(element_html, data):
         
         lst_rows.append(dic_rows)
     
+    
     data['params']['df_set'] = dict()
     data['params']['df_set']['column_set'] = lst_colset
     data['params']['df_set']['indice_set'] = lst_indice_set
     data['params']['df_set']['row_set'] = lst_rows
+    data['params']['df_set']['width'] = col_width[num_col]
     data['params']['df_set']['question_uuid'] = uuid
     data['correct_answers'][uuid] = answer_dic
 
 
 def render(element_html, data):
-    num_col = int(data['params']['num_col'])
+    num_index = data['params']['num_index']
+    num_col = data['params']['num_col']
     num_col = [True for i in range(0,num_col)]
-    
-    num_row = int(data['params']['num_row'])
-    num_row = [True for i in range(0,num_row)]
-    
-    num_col_row = [{'num_row':num_row,'order_col':i} for i in range(0,len(num_col)-1)]
 
-    html_params = {
-        'question':True,
-        'column_set':data['params']['df_set']['column_set'],
-        'indice_set':data['params']['df_set']['indice_set'],
-        'row_set':data['params']['df_set']['row_set'],
-        'uuid':data['params']['df_set']['question_uuid'],
-        'num_col':num_col,
-        'num_row':num_row,
-        'num_col_row':num_col_row,
-        'num_row_for_val':len(num_col_row)
-    }
+    num_row = data['params']['num_row']
+    num_row = [True for i in range(0,num_row+1)]
 
-    with open('pl-pivot-table.mustache', 'r') as f:
-        return chevron.render(f, html_params).strip()
+    num_raw_dropzone = [{'order_zone':i} for i in range(0,len(num_col)-1)]
+
+    if num_index == 1:
+    
+        html_params = {
+            'question':True,
+            'column_set':data['params']['df_set']['column_set'],
+            'indice_set':data['params']['df_set']['indice_set'],
+            'is_multicol':data['params']['multi_cols'],
+            'row_set':data['params']['df_set']['row_set'],
+            'uuid':data['params']['df_set']['question_uuid'],
+            'width':data['params']['df_set']['width'],
+            'num_col':num_col,
+            'num_row':num_row,
+            'num_row_dropzone':num_raw_dropzone,
+            'num_row_dropzone_val':len(num_raw_dropzone)
+        }
+
+        with open('pl-pivot-table-single.mustache', 'r') as f:
+            return chevron.render(f, html_params).strip()
+            
+    elif num_index == 2:
+    
+        html_params = {
+            'question':True,
+            'column_set':data['params']['df_set']['column_set'],
+            'indice_set':data['params']['df_set']['indice_set'],
+            'is_multicol':data['params']['multi_cols'],
+            'row_set':data['params']['df_set']['row_set'],
+            'uuid':data['params']['df_set']['question_uuid'],
+            'width':data['params']['df_set']['width'],
+            'num_col':num_col,
+            'num_row':num_row,
+            'num_row_dropzone':num_raw_dropzone,
+            'num_row_dropzone_val':len(num_raw_dropzone)
+        }
+
+        with open('pl-pivot-table-double.mustache', 'r') as f:
+            return chevron.render(f, html_params).strip()
+            
+    elif num_index == 3:
+
+        html_params = {
+            'question':True,
+            'column_set':data['params']['df_set']['column_set'],
+            'indice_set':data['params']['df_set']['indice_set'],
+            'is_multicol':data['params']['multi_cols'],
+            'row_set':data['params']['df_set']['row_set'],
+            'uuid':data['params']['df_set']['question_uuid'],
+            'num_col':num_col,
+            'num_row':num_row,
+            'num_col_row':num_col_row,
+            'num_row_for_val':len(num_col_row)
+        }
+
+        with open('pl-pivot-table-triple.mustache', 'r') as f:
+            return chevron.render(f, html_params).strip()
+        
+        
 
 def parse(element_html, data):
     uuid = data['params']['df_set']['question_uuid']

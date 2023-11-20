@@ -6,32 +6,24 @@ margin-bottom: 40px;
 margin-bottom: 5px;
 cursor: grab;
 }
-.my-col{
+.col-cell, .index-cell, .row-cell{
 border-style: solid;
 border-color: rgb(28, 28, 28);
 background-color: #bec0bf;
 }
 
-.index-box{
+.index-box, .row-box{
 border-style: solid;
 margin-bottom: 40px;
 }
 
-.index{
+
+.index-set, .row-set{
 margin-right: 10px;
 cursor: grab;
 }
 
-.row-box{
-border-style: solid;
-margin-bottom: 40px;
-}
-
-.drop-zone{
-border-style: solid;
-}
-
-.drop-col, .drop-index, .drop-row{
+.drop-zone-col, .drop-zone-index, .drop-zone-row{
 border-style: solid;
 border-color: rgb(28, 28, 28);
 background-color: #ffffff;
