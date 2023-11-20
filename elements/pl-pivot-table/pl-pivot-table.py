@@ -30,38 +30,80 @@ def prepare(element_html, data):
     col_width = {6:'2',5:'2',4:'3',3:'3',2:'3'}
     
     uuid = pl.get_uuid()
-    answer_dic = {
-        'uuid':uuid,
-        'column':list(),
-        'index':list(),
-        'row':list()
-    }
+    if(is_multicol):
+        answer_dic = {
+            'uuid':uuid,
+            'column1':list(),
+            'column2':list(),
+            'index':list(),
+            'row':list()
+        }
+    else:
+        answer_dic = {
+            'uuid':uuid,
+            'column':list(),
+            'index':list(),
+            'row':list()
+        }
+
     
     html_cols = soup.find('pl-column').find_all('pl-choice')
     lst_colset = list()
-    for count ,choice in enumerate(html_cols):
-        dic_cols = dict()
-        cell_vals = choice.text.split(' ')
-        cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
+
+    if(is_multicol):
+        for count ,choice in enumerate(html_cols):
+            dic_cols = dict()
+            cell_vals = choice.text.split(' ')
+            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
+            
+            condition1 = (is_ellipsis and (len(cell_vals) == (num_col-1))) #With ellipsis, number of columns data should be num_col-1
+            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_col)))#Without ellipsis, number of columns data should be num_col
+            if not(condition1 or condition2):
+                print("Number of columns should be equal to attribute setting")
+            
+            
+            dic_cols['column'] = [{'inner_html':cell_val} for cell_val in cell_vals]
+            dic_cols['order_col'] = count
         
-        condition1 = (is_ellipsis and (len(cell_vals) == (num_col-1))) #With ellipsis, number of columns data should be num_col-1
-        condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_col)))#Without ellipsis, number of columns data should be num_col
-        if not(condition1 or condition2):
-            print("Number of columns should be equal to attribute setting")
-        
-        
-        dic_cols['column'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-        dic_cols['order_col'] = count
+            if is_ellipsis:
+                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
+            else:
+                dic_cols['is_ellipsis'] = False
     
-        if is_ellipsis:
-            dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
-        else:
-            dic_cols['is_ellipsis'] = False
+            if choice['correct'] == 'true':
+                if not 'place' in choice.attrs:
+                    print("Place of column answer isn't specified")
+
+                if choice['place'] == "1":
+                    answer_dic['column1'].append(count)
+                elif choice['place'] == "2":
+                    answer_dic['column2'].append(count)
+                
+            lst_colset.append(dic_cols)
+    else:
+        for count ,choice in enumerate(html_cols):
+            dic_cols = dict()
+            cell_vals = choice.text.split(' ')
+            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
             
-        if choice['correct'] == 'true':
-            answer_dic['column'].append(count)
+            condition1 = (is_ellipsis and (len(cell_vals) == (num_col-1))) #With ellipsis, number of columns data should be num_col-1
+            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_col)))#Without ellipsis, number of columns data should be num_col
+            if not(condition1 or condition2):
+                print("Number of columns should be equal to attribute setting")
             
-        lst_colset.append(dic_cols)
+            
+            dic_cols['column'] = [{'inner_html':cell_val} for cell_val in cell_vals]
+            dic_cols['order_col'] = count
+        
+            if is_ellipsis:
+                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
+            else:
+                dic_cols['is_ellipsis'] = False
+    
+            if choice['correct'] == 'true':
+                answer_dic['column'].append(count)
+                
+            lst_colset.append(dic_cols)
     
     
         
@@ -110,8 +152,7 @@ def prepare(element_html, data):
         if choice['correct'] == 'true':
             #which row should be placed in which place
             place = json.loads(choice['place'])
-            answer_pair = (count,place)
-            answer_dic['row'].append(answer_pair)
+            answer_dic['row'].append(place)
         
         lst_rows.append(dic_rows)
     
@@ -194,44 +235,74 @@ def render(element_html, data):
         
 
 def parse(element_html, data):
-    uuid = data['params']['df_set']['question_uuid']
-    default_return = '{"column":null,"index":null,"row":null}'
-    student_answer = data['raw_submitted_answers'].get(uuid+'-input',default_return)
-    student_answer = json.loads(student_answer)
+    is_multicol =  data['params']['multi_cols']
+    
+    if(is_multicol):
+        uuid = data['params']['df_set']['question_uuid']
+        default_return = '{"column1":null,"column2":null,"index":null,"row":null}'
+        student_answer = data['raw_submitted_answers'].get(uuid+'-input',default_return)
+        student_answer = json.loads(student_answer)
+    
+    else:
+        uuid = data['params']['df_set']['question_uuid']
+        default_return = '{"column":null,"index":null,"row":null}'
+        student_answer = data['raw_submitted_answers'].get(uuid+'-input',default_return)
+        student_answer = json.loads(student_answer)
     
     data['submitted_answers'] = student_answer
 
 def grade(element_html, data):
     uuid = data['params']['df_set']['question_uuid']
     answer_dic = data['correct_answers'][uuid]
-    num_row_place = int(data['params']['num_col']) - 1
+    num_row_dropzone = int(data['params']['num_col']) - 1
+    is_multicol = data['params']['multi_cols']
     
     final_score = 0
     index_submitted = data['submitted_answers']['index']
     index_submitted = int(index_submitted) if type(index_submitted) == str else None
     if index_submitted in answer_dic['index']:
         final_score += 0.3
-        
-    col_submitted = data['submitted_answers']['column']
-    col_submitted = int(col_submitted) if type(col_submitted) == str else None
-    if col_submitted in answer_dic['column']:
-        final_score += 0.3
+    
+    if(is_multicol):
+        col_submitted1 = data['submitted_answers']['column1']
+        col_submitted2 = data['submitted_answers']['column2']
+
+        col_submitted1 = int(col_submitted1) if type(col_submitted1) == str else None
+        col_submitted2 = int(col_submitted2) if type(col_submitted2) == str else None
+
+
+        if col_submitted1 in answer_dic['column1']:
+            final_score += 0.15
+        if col_submitted2 in answer_dic['column2']:
+            final_score += 0.15
+    else:
+        col_submitted = data['submitted_answers']['column']
+        col_submitted = int(col_submitted) if type(col_submitted) == str else None
+        if col_submitted in answer_dic['column']:
+            final_score += 0.3
     
     row_submitted = data['submitted_answers']['rows']
     row_submitted = list(map(lambda x: int(x) if type(x) == str else None ,row_submitted))
-    count_correct = 0
-    for row_count, place in answer_dic['row']:
-        if count_correct == num_row_place:
+
+    correct_count = 0 #This will be counted upto the number of row dropzone(Are all row choices in dropzone correct?)
+    for dropzone_spot, row_choice in enumerate(row_submitted):
+        if correct_count == num_row_dropzone:
             break
         
-        if type(place) == list:
-            for spot in place:
-                if row_submitted[spot-1] == row_count:
-                        count_correct += 1
-        elif row_submitted[place-1] == row_count:
-            count_correct += 1
-                
-    if count_correct == num_row_place:
+        
+        answer_row = answer_dic['row'][row_choice-1] #List or place of valid answer spots where row_choice should be
+    
+        if type(answer_row) == list:
+            answer_row = list(map(lambda x: x-1, answer_row))
+            if dropzone_spot in answer_row:
+                correct_count += 1
+        else:
+            answer_row -= 1
+            if dropzone_spot == answer_row:
+                correct_count += 1
+
+    if correct_count == num_row_dropzone:
         final_score += 0.4
+
     
     data['partial_scores'][uuid] = {'score':final_score}

@@ -2,6 +2,9 @@ $(function() {
     //Change selection method in future to specify the current question(uuid)
     var row = Array.from({length: num_row_dropzone}, x => null);
     var answer = {'column':null,'index':null,'rows':row};
+    if(is_multicol){
+        answer = {'column1':null,'column2':null,'index':null,'rows':row};
+    }
 
     $(".drop-zone-index")[0].textContent = "Index Label";
 
@@ -71,28 +74,80 @@ $(function() {
         
     });
 
-    $(".drop-zone-col").droppable({
-        accept: ".col-set",
-        drop: function(event, ui) {
-            var draggable = ui.draggable;
-            var droppable = $(this);
+    
+    if(is_multicol){
+        $(".drop-zone-col").droppable({
+            accept: ".col-set",
+            drop: function(event, ui) {
+                var draggable = ui.draggable;
+                var droppable = $(this);
+    
+                let draggable_cols = Array.from(draggable.find('.col-cell'));
+                let dropzone_cols = droppable.parent().find('.drop-zone-col');
+                dropzone_cols = Array.from(dropzone_cols);
+    
+                draggable_cols.forEach(function(ele, index){
+                    dropzone_cols[index].textContent = ele.textContent;
+                    $(dropzone_cols[index]).addClass('dropped-color-col');
+                })
+    
+                var col_num = $(ui.helper).attr('data-order');
+                var id_answer_name = '#' + uuid + '-input';
+                answer['column1'] = col_num;
+                $(id_answer_name).val(JSON.stringify(answer));
+    
+            }
+        });
 
-            let draggable_cols = Array.from(draggable.find('.col-cell'));
-            let dropzone_cols = droppable.parent().find('.drop-zone-col');
-            dropzone_cols = Array.from(dropzone_cols);
+        $(".drop-zone-col2").droppable({
+            accept: ".col-set",
+            drop: function(event, ui) {
+                var draggable = ui.draggable;
+                var droppable = $(this);
+    
+                let draggable_cols = Array.from(draggable.find('.col-cell'));
+                let dropzone_cols = droppable.parent().find('.drop-zone-col2');
+                dropzone_cols = Array.from(dropzone_cols);
+    
+                draggable_cols.forEach(function(ele, index){
+                    dropzone_cols[index].textContent = ele.textContent;
+                    $(dropzone_cols[index]).addClass('dropped-color-col');
+                })
+    
+                var col_num = $(ui.helper).attr('data-order');
+                var id_answer_name = '#' + uuid + '-input';
+                answer['column2'] = col_num;
+                $(id_answer_name).val(JSON.stringify(answer));
+    
+            }
+        });
+    } else{
 
-            draggable_cols.forEach(function(ele, index){
-                dropzone_cols[index].textContent = ele.textContent;
-                $(dropzone_cols[index]).addClass('dropped-color-col');
-            })
+        $(".drop-zone-col").droppable({
+            accept: ".col-set",
+            drop: function(event, ui) {
+                var draggable = ui.draggable;
+                var droppable = $(this);
+    
+                let draggable_cols = Array.from(draggable.find('.col-cell'));
+                let dropzone_cols = droppable.parent().find('.drop-zone-col');
+                dropzone_cols = Array.from(dropzone_cols);
+    
+                draggable_cols.forEach(function(ele, index){
+                    dropzone_cols[index].textContent = ele.textContent;
+                    $(dropzone_cols[index]).addClass('dropped-color-col');
+                })
+    
+                var col_num = $(ui.helper).attr('data-order');
+                var id_answer_name = '#' + uuid + '-input';
+                answer['column'] = col_num;
+                $(id_answer_name).val(JSON.stringify(answer));
+    
+            }
+        });
 
-            var col_num = $(ui.helper).attr('data-order');
-            var id_answer_name = '#' + uuid + '-input';
-            answer['column'] = col_num;
-            $(id_answer_name).val(JSON.stringify(answer));
+    }
 
-        }
-    });
 
     if(num_index === 1){
         $(".drop-zone-index").droppable({
