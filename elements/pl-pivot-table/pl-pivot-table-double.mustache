@@ -23,16 +23,16 @@
             <h2>Choose answer index here</h2>
             <div class="row">
                 {{#indice_set}}
-                <div class="col-md-{{{width}}}">
+                <div class="col-md-1"{{{calibration}}}>
                     <div class="index-set" id="{{uuid}}" data-order="{{order_index}}">
                         {{#index}}
                         <div class="row">
-                            <div class="col-md-12 index-cell">{{{inner_html}}}</div>
+                            <div class="col-md-12 index-cell" style="height: 30px;">{{{inner_html}}}</div>
                         </div>
                         {{/index}}
                         {{#is_ellipsis}}
                         <div class="row">
-                            <div class="col-md-12 index-cell">...</div>
+                            <div class="col-md-12 index-cell" style="height: 30px;">...</div>
                         </div>
                         {{/is_ellipsis}}
                     </div>
@@ -78,13 +78,14 @@
             {{#is_multicol}}
             <div class="row">
                 {{#num_col}}
-                <div class="col-md-{{{width}}} drop-zone-col" col_order="1">Column</div>
+                <div class="col-md-{{{width}}} drop-zone-col2" col_order="1">Column</div>
                 {{/num_col}}
             </div>
             {{/is_multicol}}
             {{#num_row}}
             <div class="row">
-                <div class="col-md-{{{width}}} drop-zone-index">Index</div>
+                <div class="col-md-1 drop-zone-index1"{{{calibration}}}>Index</div>
+                <div class="col-md-1 drop-zone-index2"{{{calibration}}}>Index</div>
                 {{#num_row_dropzone}}
                 <div class="col-md-{{{width}}} drop-zone-row" order="{{{order_zone}}}">&nbsp</div>
                 {{/num_row_dropzone}}

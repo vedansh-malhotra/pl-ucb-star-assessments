@@ -2,11 +2,19 @@ $(function() {
     //Change selection method in future to specify the current question(uuid)
     var row = Array.from({length: num_row_dropzone}, x => null);
     var answer = {'column':null,'index':null,'rows':row};
-    if(is_multicol){
-        answer = {'column1':null,'column2':null,'index':null,'rows':row};
-    }
 
-    $(".drop-zone-index")[0].textContent = "Index Label";
+    if(num_index === 1 & is_multicol){
+        answer = {'column1':null,'column2':null,'index':null,'rows':row};
+    } else if(num_index === 2){
+        if(is_multicol){
+            answer = {'column1':null,'column2':null,'index1':null,'index2':null,'rows':row};
+        } else {
+            answer = {'column':null,'index1':null,'index2':null,'rows':row};
+        }
+    }
+    var id_answer_name = '#' + uuid + '-input';
+    $(id_answer_name).val(JSON.stringify(answer));
+    
 
     $(".col-set").draggable({
         helper: "clone",
@@ -172,23 +180,48 @@ $(function() {
             }
         });
     } else if(num_index === 2){
-        $(".drop-zone-index").droppable({
-            accept: ".index",
+        $(".drop-zone-index1").droppable({
+            accept: ".index-set",
             drop: function(event, ui) {
                 
                 var draggable = ui.draggable;
                 var droppable = $(this);
 
-                let drag_cols = Array.from(draggable.find('.col-md-12'));
-                let drop_cols = Array.from(droppable.find('.col-md-12'));
-                drag_cols.forEach(function(ele, index){
-                    drop_cols[index].textContent = ele.textContent;
-                    $(drop_cols[index]).addClass('dropped-color-index');
+                let draggable_indice = Array.from(draggable.find('.index-cell'));
+                let dropzone_indice = droppable.parent().parent().find('.drop-zone-index1');
+                dropzone_indice = Array.from(dropzone_indice);
+
+                draggable_indice.forEach(function(ele, index){
+                    dropzone_indice[index].textContent = ele.textContent;
+                    $(dropzone_indice[index]).addClass('dropped-color-index');
                 })
                 
                 var index_num = $(ui.helper).attr('data-order');
                 var id_answer_name = '#' + uuid + '-input';
-                answer['index'] = index_num;
+                answer['index1'] = index_num;
+                $(id_answer_name).val(JSON.stringify(answer));
+            }
+        });
+
+        $(".drop-zone-index2").droppable({
+            accept: ".index-set",
+            drop: function(event, ui) {
+                
+                var draggable = ui.draggable;
+                var droppable = $(this);
+
+                let draggable_indice = Array.from(draggable.find('.index-cell'));
+                let dropzone_indice = droppable.parent().parent().find('.drop-zone-index2');
+                dropzone_indice = Array.from(dropzone_indice);
+
+                draggable_indice.forEach(function(ele, index){
+                    dropzone_indice[index].textContent = ele.textContent;
+                    $(dropzone_indice[index]).addClass('dropped-color-index');
+                })
+                
+                var index_num = $(ui.helper).attr('data-order');
+                var id_answer_name = '#' + uuid + '-input';
+                answer['index2'] = index_num;
                 $(id_answer_name).val(JSON.stringify(answer));
             }
         });
@@ -241,31 +274,133 @@ $(function() {
         }
     });
 
-    //Change selector in future to specify button only for the current question
-    $("#unique").click(function(){
-        //Change selection method in future to specify the current question(uuid)
-        let cols = document.querySelectorAll(".drop-col");
-        let indice = document.querySelectorAll(".drop-index");
-        let rows = document.querySelectorAll(".drop-row");
-        cols.forEach(ele => {
-            $(ele).removeClass('dropped-color-col');
-            ele.textContent = "Column";
-        })
-    
-        indice.forEach(ele => {
-            $(ele).removeClass('dropped-color-index');
-            ele.textContent = "Index";
-        })
-    
-        rows.forEach(ele => {
-            $(ele).removeClass('dropped-color-row');
-            ele.textContent = "\u00A0";
-        })
+    if(num_index === 1){
+        if(is_multicol){
+            $("#unique").click(function(){
+                let cols1 = document.querySelectorAll(".drop-zone-col");
+                let cols2 = document.querySelectorAll(".drop-zone-col2");
+                let indice = document.querySelectorAll(".drop-zone-index");
+                let rows = document.querySelectorAll(".drop-zone-row");
 
-        let reset_row = Array.from({length: num_row}, x => null);
-        answer = {'column':null,'index':null,'rows':reset_row};
-        var id_answer_name = '#' + uuid + '-input';
-        $(id_answer_name).val(JSON.stringify(answer));
-    });
+                cols1.forEach(ele => {
+                    $(ele).removeClass('dropped-color-col');
+                    ele.textContent = "Column";
+                })
+                cols2.forEach(ele => {
+                    $(ele).removeClass('dropped-color-col');
+                    ele.textContent = "Column";
+                })
+            
+                indice.forEach(ele => {
+                    $(ele).removeClass('dropped-color-index');
+                    ele.textContent = "Index";
+                })
+            
+                rows.forEach(ele => {
+                    $(ele).removeClass('dropped-color-row');
+                    ele.textContent = "\u00A0";
+                })
+        
+                var id_answer_name = '#' + uuid + '-input';
+                $(id_answer_name).val(JSON.stringify(answer));
+            });
+
+        } else{
+            $("#unique").click(function(){
+                let cols1 = document.querySelectorAll(".drop-zone-col");
+                let indice = document.querySelectorAll(".drop-zone-index");
+                let rows = document.querySelectorAll(".drop-zone-row");
+
+                cols1.forEach(ele => {
+                    $(ele).removeClass('dropped-color-col');
+                    ele.textContent = "Column";
+                })
+            
+                indice.forEach(ele => {
+                    $(ele).removeClass('dropped-color-index');
+                    ele.textContent = "Index";
+                })
+            
+                rows.forEach(ele => {
+                    $(ele).removeClass('dropped-color-row');
+                    ele.textContent = "\u00A0";
+                })
+        
+                var id_answer_name = '#' + uuid + '-input';
+                $(id_answer_name).val(JSON.stringify(answer));
+            });
+        }
+        
+
+    } else if(num_index === 2){
+        if(is_multicol){
+            $("#unique").click(function(){
+                let cols1 = document.querySelectorAll(".drop-zone-col");
+                let cols2 = document.querySelectorAll(".drop-zone-col2");
+                let indice1 = document.querySelectorAll(".drop-zone-index1");
+                let indice2 = document.querySelectorAll(".drop-zone-index2");
+                let rows = document.querySelectorAll(".drop-zone-row");
+
+                cols1.forEach(ele => {
+                    $(ele).removeClass('dropped-color-col');
+                    ele.textContent = "Column";
+                })
+                cols2.forEach(ele => {
+                    $(ele).removeClass('dropped-color-col');
+                    ele.textContent = "Column";
+                })
+            
+                indice1.forEach(ele => {
+                    $(ele).removeClass('dropped-color-index');
+                    ele.textContent = "Index";
+                })
+                indice2.forEach(ele => {
+                    $(ele).removeClass('dropped-color-index');
+                    ele.textContent = "Index";
+                })
+            
+                rows.forEach(ele => {
+                    $(ele).removeClass('dropped-color-row');
+                    ele.textContent = "\u00A0";
+                })
+        
+                var id_answer_name = '#' + uuid + '-input';
+                $(id_answer_name).val(JSON.stringify(answer));
+            });
+
+        } else {
+            $("#unique").click(function(){
+                let cols1 = document.querySelectorAll(".drop-zone-col");
+                let indice1 = document.querySelectorAll(".drop-zone-index1");
+                let indice2 = document.querySelectorAll(".drop-zone-index2");
+                let rows = document.querySelectorAll(".drop-zone-row");
+
+                cols1.forEach(ele => {
+                    $(ele).removeClass('dropped-color-col');
+                    ele.textContent = "Column";
+                })
+            
+                indice1.forEach(ele => {
+                    $(ele).removeClass('dropped-color-index');
+                    ele.textContent = "Index";
+                })
+                indice2.forEach(ele => {
+                    $(ele).removeClass('dropped-color-index');
+                    ele.textContent = "Index";
+                })
+            
+                rows.forEach(ele => {
+                    $(ele).removeClass('dropped-color-row');
+                    ele.textContent = "\u00A0";
+                })
+        
+                var id_answer_name = '#' + uuid + '-input';
+                $(id_answer_name).val(JSON.stringify(answer));
+            });
+
+        }
+    }
+    //Change selector in future to specify button only for the current question
+    
 
 });

@@ -23,7 +23,7 @@ margin-right: 10px;
 cursor: grab;
 }
 
-.drop-zone-col, .drop-zone-col2, .drop-zone-index, .drop-zone-row{
+.drop-zone-col, .drop-zone-col2, .drop-zone-index,.drop-zone-index1,.drop-zone-index2, .drop-zone-row{
 border-style: solid;
 border-color: rgb(28, 28, 28);
 background-color: #ffffff;
