@@ -3,47 +3,88 @@ import chevron
 import lxml.html
 import json
 import pandas as pd
+import numpy as np
 import prairielearn as pl
+import random
 from bs4 import BeautifulSoup
+from itertools import permutations 
 
 
 def prepare(element_html, data):
     soup = BeautifulSoup(element_html)
     
-    num_col = int(soup.find('pl-pivot-table')['col'])
-    if num_col < 2:
-        print("Invalid column number")
-    data['params']['num_col'] = num_col
     
-    num_row = int(soup.find('pl-pivot-table')['row'])
-    if num_row < 1:
-        print("Invalid row number")
-    data['params']['num_row'] = num_row
-    
-    #num_index won't be refered in this function again, so there is no declaration of it
-    num_index = int(soup.find('pl-pivot-table')['index'])
-    data['params']['num_index'] = num_index
-    
+    max_row = int(soup.find('pl-pivot-table-random')['max-row'])
+    if max_row < 1 or max_row > 6:
+        print("Invalid max row")
+    data['params']['max_row'] = max_row
 
-    is_ellipsis = soup.find('pl-pivot-table')['ellipsis'] == 'true'
-    is_multicol = soup.find('pl-pivot-table')['multi-col'] == 'true'
-    data['params']['multi_cols'] = is_multicol
+    args = soup.find('pl-pivot-table-random').text
     
+    exec_variable = {'x':dict()}
+    exec("x = " + args.strip(),None,exec_variable)
+    args = exec_variable['x']
+
+    num_possible_col = 0
+    for key in args:
+        if type(args[key]) == list:
+            num_possible_col += len(args[key])
+        else:
+            num_possible_col += 1
+
+    if num_possible_col > 6:
+        print("Sorry the number of possible columns from operation exceeds the number this element supports. Max is 6")
+
+    origin_df = data["params"]["orginal"]
+    origin_df = pl.from_json(origin_df)
+    origin_df = cast(pd.DataFrame, origin_df)
+
+    val = args['values']
+    val_random = random.sample(val, len(val))
+
+    index = args['index']
+    index_random = random.sample(index, len(index))
+
+    dic = args['aggfunc']
+    dic_random = random.sample(sorted(dic), len(dic))
+    dic_random = {dic_random[count]:value for count, value in enumerate(dic.values())}
+
+
+    answer_df = pd.pivot_table(origin_df, values=val_random, index=index_random,
+        aggfunc=dic_random)
+    
+    col_answer = sorted(answer_df.columns)
+    num_col = len(col_answer)
+    if type(col_answer[0]) == tuple:
+        is_multicol = True
+    else:
+        is_multicol = False
+        num_col += 1
+
+
+    indexname_answer = answer_df.index.names
+    index_answer = sorted(answer_df.index)
+    num_index = len(indexname_answer)
+
+    row_answer = answer_df.values
+    num_row = min(len(row_answer), max_row)
+
+    is_ellipsis = soup.find('pl-pivot-table-random')['ellipsis'] == 'true'
     col_width = {6:'2',5:'2',4:'3',3:'3',2:'3'}
     
     uuid = pl.get_uuid()
-    if(is_multicol):
+    if(is_multicol): #when columns are multi-columns, num_col will be equal to num of dropzone
         answer_dic = {
             'uuid':uuid,
             'column1':list(),
             'column2':list(),
-            'row':list()
+            'row':[list() for i in range(0,num_col)]
         }
     else:
         answer_dic = {
             'uuid':uuid,
             'column':list(),
-            'row':list()
+            'row':[list() for i in range(0,num_col-1)]
         }
 
     if num_index == 1:
@@ -52,153 +93,207 @@ def prepare(element_html, data):
         answer_dic['index1'] = list()
         answer_dic['index2'] = list()
     
-    html_cols = soup.find('pl-column').find_all('pl-choice')
-    lst_colset = list()
+    
 
     if(is_multicol):
-        for count ,choice in enumerate(html_cols):
-            dic_cols = dict()
-            cell_vals = choice.text.split(' ')
-            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
-            
-            condition1 = (is_ellipsis and (len(cell_vals) == (num_col-1))) #With ellipsis, number of columns data should be num_col-1
-            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_col)))#Without ellipsis, number of columns data should be num_col
-            if not(condition1 or condition2):
-                print("Number of columns should be equal to attribute setting")
-            
-            
-            dic_cols['column'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-            dic_cols['order_col'] = count
-        
-            if is_ellipsis:
-                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
-            else:
-                dic_cols['is_ellipsis'] = False
-    
-            if choice['correct'] == 'true':
-                if not 'place' in choice.attrs:
-                    print("Place of column answer isn't specified")
-
-                if choice['place'] == "1":
-                    answer_dic['column1'].append(count)
-                elif choice['place'] == "2":
-                    answer_dic['column2'].append(count)
-                
-            lst_colset.append(dic_cols)
+        for col1, col2 in col_answer:
+            answer_dic['column1'].append(col1)
+            answer_dic['column2'].append(col2)
     else:
-        for count ,choice in enumerate(html_cols):
-            dic_cols = dict()
-            cell_vals = choice.text.split(' ')
-            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
+        answer_df['column'].append(answer_df.columns.name)
+        for column_cell in col_answer:
+            answer_dic['column'].append(column_cell)
             
-            condition1 = (is_ellipsis and (len(cell_vals) == (num_col-1))) #With ellipsis, number of columns data should be num_col-1
-            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_col)))#Without ellipsis, number of columns data should be num_col
-            if not(condition1 or condition2):
-                print("Number of columns should be equal to attribute setting")
-            
-            
-            dic_cols['column'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-            dic_cols['order_col'] = count
-        
-            if is_ellipsis:
-                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
-            else:
-                dic_cols['is_ellipsis'] = False
-    
-            if choice['correct'] == 'true':
-                answer_dic['column'].append(count)
-                
-            lst_colset.append(dic_cols)
     
     
-        
-    html_indice = soup.find('pl-index').find_all('pl-choice')
-    lst_indice_set = list()
 
     if num_index == 1:
-
-        for count ,choice in enumerate(html_indice):
-            dic_indice = dict()
-            cell_vals = choice.text.split(' ')
-            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
-            
-            #Index needs one more text chunk than row, because it has index-label cell
-            condition1 = (is_ellipsis and (len(cell_vals) == (num_row))) #With ellipsis, number of columns data should be num_col
-            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_row + 1)))#Without ellipsis, number of columns data should be num_col + 1
-            if not(condition1 or condition2):
-                print("Number of indice should be equal to attribute setting")
-            
-            
-            dic_indice['index'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-            dic_indice['order_index'] = count
-            dic_indice['is_ellipsis'] = is_ellipsis
-            
-            
-            if choice['correct'] == 'true':
-                answer_dic['index'].append(count)
-            
-            lst_indice_set.append(dic_indice)
+        answer_dic['index'].append(indexname_answer)
+        for index_cell in index_answer:
+            answer_dic['index'].append(index_cell)
 
     elif num_index == 2:
+        answer_dic['index1'].append(indexname_answer[0])
+        answer_dic['index2'].append(indexname_answer[1])
+        for index_cell in index_answer:
+            answer_dic['index1'].append(index_cell[0])
+            answer_dic['index2'].append(index_cell[1])
 
-        for count ,choice in enumerate(html_indice):
+
+    for row in range(0,num_row):
+        if is_multicol:
+            for i in range(0,num_col):
+                answer_dic['row'][i].append(row_answer[:,i])
+        else:
+            for i in range(0,num_col-1):
+                answer_dic['row'][i].append(row_answer[:,i])
+
+
+    lst_colset = list()
+    if(is_multicol):
+        answer_col_order1 = random.randint(0, 2)
+        answer_col_order2 = random.randint(0, 2)
+        perms1 = list(permutations(answer_dic['column1']))[1:]
+        perms2 = list(permutations(answer_dic['column2']))[1:]
+
+        for i ,perm in enumerate(random.sample(perms1,3)):
+            dic_cols = dict()
+            
+            if i == answer_col_order1:
+                dic_cols['column'] = [{'inner_html':ele} for ele in answer_dic['column1']]
+                dic_cols['order_col'] = i
+                
+            else:
+                dic_cols['column'] = [{'inner_html':ele} for ele in perm]
+                dic_cols['order_col'] = i
+            
+            if is_ellipsis:
+                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
+            else:
+                dic_cols['is_ellipsis'] = False
+
+                
+            lst_colset.append(dic_cols)
+        answer_dic['column1'] = answer_col_order1
+
+        for i ,perm in enumerate(random.sample(perms2,3)):
+            dic_cols = dict()
+            
+            if i == answer_col_order2:
+                dic_cols['column'] = [{'inner_html':ele} for ele in answer_dic['column2']]
+                dic_cols['order_col'] = i
+                
+            else:
+                dic_cols['column'] = [{'inner_html':ele} for ele in perm]
+                dic_cols['order_col'] = i
+            
+            if is_ellipsis:
+                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
+            else:
+                dic_cols['is_ellipsis'] = False
+
+                
+            lst_colset.append(dic_cols)
+        answer_dic['column2'] = answer_col_order2
+        
+    else:
+        answer_col_order = random.randint(0, 3)
+        perms1 = list(permutations(answer_dic['column']))[1:]
+
+        for i ,perm in enumerate(random.sample(perms1,4)):
+            dic_cols = dict()
+            
+            if i == answer_col_order:
+                dic_cols['column'] = [{'inner_html':ele} for ele in answer_dic['column']]
+                dic_cols['order_col'] = i
+                
+            else:
+                dic_cols['column'] = [{'inner_html':ele} for ele in perm]
+                dic_cols['order_col'] = i
+            
+            if is_ellipsis:
+                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
+            else:
+                dic_cols['is_ellipsis'] = False
+
+                
+            lst_colset.append(dic_cols)
+        answer_dic['column'] = answer_col_order
+    
+        
+    lst_indice_set = list()
+    if num_index == 1:
+        answer_index_order = random.randint(0, 3)
+        perms1 = list(permutations(answer_dic['index']))[1:]
+
+        for i ,perm in enumerate(random.sample(perms1,4)):
             dic_indice = dict()
-            cell_vals = choice.text.split(' ')
-            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
             
-            #Index needs one more text chunk than row, because it has index-label cell
-            condition1 = (is_ellipsis and (len(cell_vals) == (num_row))) #With ellipsis, number of columns data should be num_col
-            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_row + 1)))#Without ellipsis, number of columns data should be num_col + 1
-            if not(condition1 or condition2):
-                print("Number of indice should be equal to attribute setting")
+            if i == answer_index_order:
+                dic_indice['index'] = [{'inner_html':ele} for ele in answer_dic['index']]
+                dic_indice['order_index'] = i
+                dic_indice['is_ellipsis'] = is_ellipsis
+                
+            else:
+                dic_indice['index'] = [{'inner_html':ele} for ele in perm]
+                dic_indice['order_index'] = i
+                dic_indice['is_ellipsis'] = is_ellipsis
             
-            
-            dic_indice['index'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-            dic_indice['order_index'] = count
-            dic_indice['is_ellipsis'] = is_ellipsis
-            
-            
-            if choice['correct'] == 'true':
+            if is_ellipsis:
+                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
+            else:
+                dic_cols['is_ellipsis'] = False
 
-                if not 'place' in choice.attrs:
-                    print("Place of index answer isn't specified")
+                
+            lst_colset.append(dic_cols)
+        answer_dic['index'] = answer_index_order
 
-                if choice['place'] == "1":
-                    answer_dic['index1'].append(count)
-                elif choice['place'] == "2":
-                    answer_dic['index2'].append(count)
+    elif num_index == 2:
+        answer_index_order1 = random.randint(0, 3)
+        answer_index_order2 = random.randint(0, 3)
+        perms1 = list(permutations(answer_dic['index1']))[1:]
+        perms2 = list(permutations(answer_dic['index2']))[1:]
+
+        for i ,perm in enumerate(random.sample(perms1,4)):
+            dic_indice = dict()
             
-            lst_indice_set.append(dic_indice)
+            if i == answer_index_order:
+                dic_indice['index'] = [{'inner_html':ele} for ele in answer_dic['index1']]
+                dic_indice['order_index'] = i
+                dic_indice['is_ellipsis'] = is_ellipsis
+                
+            else:
+                dic_indice['index'] = [{'inner_html':ele} for ele in perm]
+                dic_indice['order_index'] = i
+                dic_indice['is_ellipsis'] = is_ellipsis
+            
+            if is_ellipsis:
+                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
+            else:
+                dic_cols['is_ellipsis'] = False
+
+                
+            lst_colset.append(dic_cols)
+        answer_dic['index1'] = answer_index_order1
+
+        for i ,perm in enumerate(random.sample(perms1,4)):
+            dic_indice = dict()
+            
+            if i == answer_index_order:
+                dic_indice['index'] = [{'inner_html':ele} for ele in answer_dic['index2']]
+                dic_indice['order_index'] = i
+                dic_indice['is_ellipsis'] = is_ellipsis
+                
+            else:
+                dic_indice['index'] = [{'inner_html':ele} for ele in perm]
+                dic_indice['order_index'] = i
+                dic_indice['is_ellipsis'] = is_ellipsis
+            
+            if is_ellipsis:
+                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
+            else:
+                dic_cols['is_ellipsis'] = False
+
+                
+            lst_colset.append(dic_cols)
+        answer_dic['index2'] = answer_index_order2
 
         
-    html_rows = soup.find('pl-row').find_all('pl-choice')
     lst_rows = list()
-    for count ,choice in enumerate(html_rows):
+    num_dropzone = len(answer_dic['row'])
+    html_row_order = random.sample(range(0,num_dropzone),num_dropzone)
+    for order in html_row_order:
         dic_rows = dict()
-        cell_vals = choice.text.split(' ')
-        cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
         
-        condition1 = (is_ellipsis and (len(cell_vals) == (num_row-1))) #With ellipsis, number of columns data should be num_col-1
-        condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_row)))#Without ellipsis, number of columns data should be num_col
-        if not(condition1 or condition2):
-            print("Number of rows should be equal to attribute setting")
-            
-
-        dic_rows['row'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-        dic_rows['order_row'] = count
+        dic_rows['row'] = [{'inner_html':ele} for ele in answer_dic['row'][order]]
+        dic_rows['order_row'] = order
         dic_rows['is_ellipsis'] = is_ellipsis
         
         
-        if choice['correct'] == 'true':
-            #which row should be placed in which place
-            place = json.loads(choice['place'])
-            answer_dic['row'].append(place)
-        else:
-            answer_dic['row'].append(None)
-        
         lst_rows.append(dic_rows)
-    
-    
+
+    print(lst_colset)
+    print(lst_rows)
     data['params']['df_set'] = dict()
     data['params']['df_set']['column_set'] = lst_colset
     data['params']['df_set']['indice_set'] = lst_indice_set
@@ -368,8 +463,6 @@ def grade(element_html, data):
             if dropzone_spot in answer_row:
                 correct_count += 1
         else:
-            if answer_row == None:
-                continue
             answer_row -= 1
             if dropzone_spot == answer_row:
                 correct_count += 1
