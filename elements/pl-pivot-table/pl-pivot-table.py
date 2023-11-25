@@ -159,7 +159,6 @@ def prepare(element_html, data):
             
             
             if choice['correct'] == 'true':
-
                 if not 'place' in choice.attrs:
                     print("Place of index answer isn't specified")
 
@@ -364,7 +363,7 @@ def grade(element_html, data):
         answer_row = answer_dic['row'][row_choice] #List or place of valid answer spots where row_choice should be
 
         if type(answer_row) == list:
-            answer_row = list(map(lambda x: x-1, answer_row))
+            answer_row = list(map(lambda x: x-1, answer_row)) #Subtract each element by one => the attribute input starting from one: place="[1,2,3]"
             if dropzone_spot in answer_row:
                 correct_count += 1
         else:
