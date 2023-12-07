@@ -208,6 +208,7 @@ def prepare(element_html, data):
 
 
 def render(element_html, data):
+    uuid = data['params']['df_set']['question_uuid']
     num_index = data['params']['num_index']
     num_col = data['params']['num_col']
     num_col = [True for i in range(0,num_col)]
@@ -217,73 +218,77 @@ def render(element_html, data):
     num_row = [True for i in range(0,num_row+1)]
 
     num_raw_dropzone = [{'order_zone':i} for i in range(0,len(num_col)-1)]
-
-    if num_index == 1:
-    
-        html_params = {
-            'question':True,
-            'column_set':data['params']['df_set']['column_set'],
-            'indice_set':data['params']['df_set']['indice_set'],
-            'is_multicol':data['params']['multi_cols'],
-            'row_set':data['params']['df_set']['row_set'],
-            'uuid':data['params']['df_set']['question_uuid'],
-            'width':width,
-            'num_col':num_col,
-            'num_row':num_row,
-            'num_row_dropzone':num_raw_dropzone,
-            'num_row_dropzone_val':len(num_raw_dropzone)
-        }
-
-        with open('pl-pivot-table-single.mustache', 'r') as f:
-            return chevron.render(f, html_params).strip()
-            
-    elif num_index == 2:
+    if data['panel'] == 'question':
+        if num_index == 1:
         
-        if int(width) >= 3:
-            return_text = ' style="width: 12.499999995%; flex: 0 0 12.499%; max-width: 12.499%;"'
-            #return_dic = {'calibration': return_text}
-            #num_row = list(map(lambda x: return_dic,num_row))
-        else:
-            return_text = ' style="font-size: 10px;"'
-            #return_dic = {'calibration': return_text}
-            #num_row = list(map(lambda x: return_dic,num_row))
+            html_params = {
+                'question':True,
+                'column_set':data['params']['df_set']['column_set'],
+                'indice_set':data['params']['df_set']['indice_set'],
+                'is_multicol':data['params']['multi_cols'],
+                'row_set':data['params']['df_set']['row_set'],
+                'uuid':data['params']['df_set']['question_uuid'],
+                'width':width,
+                'num_col':num_col,
+                'num_row':num_row,
+                'num_row_dropzone':num_raw_dropzone,
+                'num_row_dropzone_val':len(num_raw_dropzone)
+            }
 
-    
-        html_params = {
-            'question':True,
-            'column_set':data['params']['df_set']['column_set'],
-            'indice_set':data['params']['df_set']['indice_set'],
-            'is_multicol':data['params']['multi_cols'],
-            'row_set':data['params']['df_set']['row_set'],
-            'uuid':data['params']['df_set']['question_uuid'],
-            'width':width,
-            'num_col':num_col,
-            'num_row':num_row,
-            'calibration':return_text,
-            'num_row_dropzone':num_raw_dropzone,
-            'num_row_dropzone_val':len(num_raw_dropzone)
-        }
-
-        with open('pl-pivot-table-double.mustache', 'r') as f:
-            return chevron.render(f, html_params).strip()
+            with open('pl-pivot-table-single.mustache', 'r') as f:
+                return chevron.render(f, html_params).strip()
+                
+        elif num_index == 2:
             
-    elif num_index == 3:
+            if int(width) >= 3:
+                return_text = ' style="width: 12.499999995%; flex: 0 0 12.499%; max-width: 12.499%;"'
+                #return_dic = {'calibration': return_text}
+                #num_row = list(map(lambda x: return_dic,num_row))
+            else:
+                return_text = ' style="font-size: 10px;"'
+                #return_dic = {'calibration': return_text}
+                #num_row = list(map(lambda x: return_dic,num_row))
 
+        
+            html_params = {
+                'question':True,
+                'column_set':data['params']['df_set']['column_set'],
+                'indice_set':data['params']['df_set']['indice_set'],
+                'is_multicol':data['params']['multi_cols'],
+                'row_set':data['params']['df_set']['row_set'],
+                'uuid':data['params']['df_set']['question_uuid'],
+                'width':width,
+                'num_col':num_col,
+                'num_row':num_row,
+                'calibration':return_text,
+                'num_row_dropzone':num_raw_dropzone,
+                'num_row_dropzone_val':len(num_raw_dropzone)
+            }
+
+            with open('pl-pivot-table-double.mustache', 'r') as f:
+                return chevron.render(f, html_params).strip()
+    
+    if data['panel'] == 'submission':
+        if num_index == 1:
+            html_params = {
+                'submission':data['partial_scores'][uuid]['feedback']
+            }
+            with open('pl-pivot-table-single.mustache', 'r') as f:
+                return chevron.render(f, html_params).strip()
+    
+        elif num_index == 2:
+            html_params = {
+                'submission':data['partial_scores'][uuid]['feedback']
+            }
+            with open('pl-pivot-table-double.mustache', 'r') as f:
+                return chevron.render(f, html_params).strip()
+    
+
+    if data['panel'] == 'answer':
         html_params = {
-            'question':True,
-            'column_set':data['params']['df_set']['column_set'],
-            'indice_set':data['params']['df_set']['indice_set'],
-            'is_multicol':data['params']['multi_cols'],
-            'row_set':data['params']['df_set']['row_set'],
-            'uuid':data['params']['df_set']['question_uuid'],
-            'width':width,
-            'num_col':num_col,
-            'num_row':num_row,
-            'num_row_dropzone':num_raw_dropzone,
-            'num_row_dropzone_val':len(num_raw_dropzone)
+            'submission':data['partial_scores'][uuid]['feedback']
         }
-
-        with open('pl-pivot-table-triple.mustache', 'r') as f:
+        with open('pl-pivot-table-single.mustache', 'r') as f:
             return chevron.render(f, html_params).strip()
         
         
@@ -312,12 +317,25 @@ def grade(element_html, data):
     is_multicol = data['params']['multi_cols']
     num_index = data['params']['num_index']
     final_score = 0
-    
+
+    if num_index == 1:
+        if is_multicol:
+            feedback = {'row':False,'column1':False,'column2':False,'index':False}
+        else:
+            feedback = {'row':False,'column':False,'index':False}
+    elif num_index == 2:
+        if is_multicol:
+            feedback = {'row':False,'column1':False,'column2':False,'index1':False,'index2':False}
+        else:
+            feedback = {'row':False,'column':False,'index1':False,'index2':False}
+
     if num_index == 1:
         index_submitted = data['submitted_answers']['index']
         index_submitted = int(index_submitted) if type(index_submitted) == str else None
         if index_submitted in answer_dic['index']:
             final_score += 0.3
+        else:
+            feedback['index'] = True
 
     elif num_index == 2:
         index_submitted1 = data['submitted_answers']['index1']
@@ -328,9 +346,12 @@ def grade(element_html, data):
 
         if index_submitted1 in answer_dic['index1']:
             final_score += 0.15
+            feedback['index1'] = True
 
         if index_submitted2 in answer_dic['index2']:
             final_score += 0.15
+            feedback['index2'] = True
+        
     
     if(is_multicol):
         col_submitted1 = data['submitted_answers']['column1']
@@ -342,13 +363,21 @@ def grade(element_html, data):
 
         if col_submitted1 in answer_dic['column1']:
             final_score += 0.15
+        else:
+            feedback['column1'] = True
+
         if col_submitted2 in answer_dic['column2']:
             final_score += 0.15
+        else:
+            feedback['column2'] = True
+
     else:
         col_submitted = data['submitted_answers']['column']
         col_submitted = int(col_submitted) if type(col_submitted) == str else None
         if col_submitted in answer_dic['column']:
             final_score += 0.3
+        else:
+            feedback['column'] = True
     
     row_submitted = data['submitted_answers']['rows']
     row_submitted = list(map(lambda x: int(x) if type(x) == str else None ,row_submitted))
@@ -376,6 +405,10 @@ def grade(element_html, data):
 
     if correct_count == num_row_dropzone:
         final_score += 0.4
+    else:
+        feedback['row'] = True
 
     
-    data['partial_scores'][uuid] = {'score':final_score}
+    data['partial_scores'][uuid] = {'score':final_score,
+                                    'feedback':feedback,
+                                    'weight':1}
