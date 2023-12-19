@@ -44,11 +44,3 @@ to your element subdirs.
 You've achieved the packaging milestone when you can render one
 question (even if grading doesn't fully work yet) that has its files
 placed as described above.
-
-
-## PL element for Data 100 
-
-This repository represents our work for a new element that is intended to be used as a formative assessment evaluating pivot table profiency for students in Data 100 and similar data science courses. Pivot table transformations have been considered as one of the more challenging data science concepts to master, indicating a need for a revamped method for students to practice and be assessed on the concepts. Our design philosophy for this element is based on the Mastery Learning model (https://doi.org/10.1145/3491140.3528289) developed by Professors Dan Garcia and Armando Fox. 
-
-As opposed to traditional paper-based or JupyterHub assignments, our new element incorporates randomization, drag-and-drop functionality, and instant feedback and grading. This would allow students to practice many versions of the same concept, and understand exactly where their knowledge gap lies. We ran a pilot study measuring the efficacy of the assignment, which demonstrated that introductory data science students found our element more intuitive than the JupyterHub version, and would prefer practicing pivot table transformations using our element compared to on JupyterHub. We are hopeful to implement a larger scale study to truly understand the effectiveness and scalability of our element.
-
