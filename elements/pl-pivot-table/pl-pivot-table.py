@@ -82,6 +82,7 @@ def prepare(element_html, data):
     data['params']['df_set']['width'] = col_width[num_col]
     data['params']['df_set']['question_uuid'] = uuid
     data['correct_answers'][uuid] = df_pivot.to_json()
+    # FIX CORRECT ANSWERS
 
 
 def render(element_html, data):
@@ -109,7 +110,11 @@ def render(element_html, data):
                 'num_col':num_col,
                 'num_row':num_row,
                 'num_row_dropzone':num_raw_dropzone,
-                'num_row_dropzone_val':len(num_raw_dropzone)
+                'num_row_dropzone_val':len(num_raw_dropzone),
+                "answer_row_text": "Choose answer row from this bank here",
+                "answer_col_text": "Choose answer column from this bank here",
+                "answer_index_text": "Choose answer index from this bank here",
+                "answer_drop_text": "Drop selected answers here"
             }
 
             with open('pl-pivot-table-single.mustache', 'r') as f:
@@ -139,7 +144,11 @@ def render(element_html, data):
                 'num_row':num_row,
                 'calibration':return_text,
                 'num_row_dropzone':num_raw_dropzone,
-                'num_row_dropzone_val':len(num_raw_dropzone)
+                'num_row_dropzone_val':len(num_raw_dropzone),
+                "answer_row_text": "Choose answer row from this bank here",
+                "answer_col_text": "Choose answer column from this bank here",
+                "answer_index_text": "Choose answer index from this bank here",
+                "answer_drop_text": "Drop selected answers here"
             }
 
             with open('pl-pivot-table-double.mustache', 'r') as f:
