@@ -5,6 +5,7 @@ import json
 import pandas as pd
 import prairielearn as pl
 from bs4 import BeautifulSoup
+import numpy as np
 
 
 def prepare(element_html, data):
@@ -20,191 +21,67 @@ def prepare(element_html, data):
         print("Invalid row number")
     data['params']['num_row'] = num_row
     
-    #num_index won't be refered in this function again, so there is no declaration of it
     num_index = int(soup.find('pl-pivot-table')['index'])
     data['params']['num_index'] = num_index
     
-
-    is_ellipsis = soup.find('pl-pivot-table')['ellipsis'] == 'true'
     is_multicol = soup.find('pl-pivot-table')['multi-col'] == 'true'
     data['params']['multi_cols'] = is_multicol
     
     col_width = {6:'2',5:'2',4:'3',3:'3',2:'3'}
     
     uuid = pl.get_uuid()
-    if(is_multicol):
-        answer_dic = {
-            'uuid':uuid,
-            'column1':list(),
-            'column2':list(),
-            'row':list()
-        }
-    else:
-        answer_dic = {
-            'uuid':uuid,
-            'column':list(),
-            'row':list()
-        }
-
-    if num_index == 1:
-        answer_dic['index'] = list()
-    elif num_index == 2:
-        answer_dic['index1'] = list()
-        answer_dic['index2'] = list()
     
-    html_cols = soup.find('pl-column').find_all('pl-choice')
-    lst_colset = list()
-
-    if(is_multicol):
-        for count ,choice in enumerate(html_cols):
-            dic_cols = dict()
-            cell_vals = choice.text.split(' ')
-            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
-            
-            condition1 = (is_ellipsis and (len(cell_vals) == (num_col-1))) #With ellipsis, number of columns data should be num_col-1
-            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_col)))#Without ellipsis, number of columns data should be num_col
-            if not(condition1 or condition2):
-                print("Number of columns should be equal to attribute setting")
-            
-            
-            dic_cols['column'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-            dic_cols['order_col'] = count
+    possible_columns = ['foo', 'bar', 'baz', 'qux', 'corge', 'grault', 'garply']
+    possible_cat_values = ['A','B','C','D','E','F','G']
+    possible_num_values = np.arange(1,11)
+    possible_agg_funcs = ['sum','mean','count','min','max']
+    
+    # Create a pandas dataframe. The columns are the possible columns selected without replacement, and the rows are the possible values. At least two columns must be categorical and one must be numerical. Keep track of which columns are categorical and which are numerical.
+    
+    columns = np.random.choice(possible_columns, size=num_col, replace=False)
+    
+    # pick two columns to be categorical
+    cat_cols = np.random.choice(columns, size=2, replace=False)
+    num_cols = [col for col in columns if col not in cat_cols]
+    
+    df = pd.DataFrame(columns=columns)
+    for cat_col in cat_cols:
+        df[cat_col] = np.random.choice(possible_cat_values, size=num_row, replace=True)
+    for num_col in num_cols:
+        df[num_col] = np.random.choice(possible_num_values, size=num_row, replace=True)
         
-            if is_ellipsis:
-                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
-            else:
-                dic_cols['is_ellipsis'] = False
+    col_pivot, index_pivot = np.random.choice(columns, size=2, replace=False)
+    val_pivot = np.random.choice(columns, size=1, replace=False)
+    agg_func  = np.random.choice(possible_agg_funcs)
     
-            if choice['correct'] == 'true':
-                if not 'place' in choice.attrs:
-                    print("Place of column answer isn't specified")
-
-                if choice['place'] == "1":
-                    answer_dic['column1'].append(count)
-                elif choice['place'] == "2":
-                    answer_dic['column2'].append(count)
-                
-            lst_colset.append(dic_cols)
-    else:
-        for count ,choice in enumerate(html_cols):
-            dic_cols = dict()
-            cell_vals = choice.text.split(' ')
-            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
-            
-            condition1 = (is_ellipsis and (len(cell_vals) == (num_col-1))) #With ellipsis, number of columns data should be num_col-1
-            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_col)))#Without ellipsis, number of columns data should be num_col
-            if not(condition1 or condition2):
-                print("Number of columns should be equal to attribute setting")
-            
-            
-            dic_cols['column'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-            dic_cols['order_col'] = count
+    # Create a pivot table with the selected columns and aggregation function. The index is the other column.
+    df_pivot = pd.pivot_table(df, index=index_pivot, columns=col_pivot, values=val_pivot, aggfunc=agg_func)
+    df_pivot_str = f"df_pivot = pd.pivot_table(df, index={index_pivot}, columns={col_pivot}, values={val_pivot}, aggfunc={agg_func})"
         
-            if is_ellipsis:
-                dic_cols['is_ellipsis'] = {'width':col_width[num_col]}
-            else:
-                dic_cols['is_ellipsis'] = False
-    
-            if choice['correct'] == 'true':
-                answer_dic['column'].append(count)
-                
-            lst_colset.append(dic_cols)
-    
     
         
-    html_indice = soup.find('pl-index').find_all('pl-choice')
-    lst_indice_set = list()
-
-    if num_index == 1:
-
-        for count ,choice in enumerate(html_indice):
-            dic_indice = dict()
-            cell_vals = choice.text.split(' ')
-            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
-            
-            #Index needs one more text chunk than row, because it has index-label cell
-            condition1 = (is_ellipsis and (len(cell_vals) == (num_row))) #With ellipsis, number of columns data should be num_col
-            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_row + 1)))#Without ellipsis, number of columns data should be num_col + 1
-            if not(condition1 or condition2):
-                print("Number of indice should be equal to attribute setting")
-            
-            
-            dic_indice['index'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-            dic_indice['order_index'] = count
-            dic_indice['is_ellipsis'] = is_ellipsis
-            
-            
-            if choice['correct'] == 'true':
-                answer_dic['index'].append(count)
-            
-            lst_indice_set.append(dic_indice)
-
-    elif num_index == 2:
-
-        for count ,choice in enumerate(html_indice):
-            dic_indice = dict()
-            cell_vals = choice.text.split(' ')
-            cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
-            
-            #Index needs one more text chunk than row, because it has index-label cell
-            condition1 = (is_ellipsis and (len(cell_vals) == (num_row))) #With ellipsis, number of columns data should be num_col
-            condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_row + 1)))#Without ellipsis, number of columns data should be num_col + 1
-            if not(condition1 or condition2):
-                print("Number of indice should be equal to attribute setting")
-            
-            
-            dic_indice['index'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-            dic_indice['order_index'] = count
-            dic_indice['is_ellipsis'] = is_ellipsis
-            
-            
-            if choice['correct'] == 'true':
-                if not 'place' in choice.attrs:
-                    print("Place of index answer isn't specified")
-
-                if choice['place'] == "1":
-                    answer_dic['index1'].append(count)
-                elif choice['place'] == "2":
-                    answer_dic['index2'].append(count)
-            
-            lst_indice_set.append(dic_indice)
-
-        
-    html_rows = soup.find('pl-row').find_all('pl-choice')
-    lst_rows = list()
-    for count ,choice in enumerate(html_rows):
-        dic_rows = dict()
-        cell_vals = choice.text.split(' ')
-        cell_vals = list(map(lambda x: x.replace('\s',' '),cell_vals))
-        
-        condition1 = (is_ellipsis and (len(cell_vals) == (num_row-1))) #With ellipsis, number of columns data should be num_col-1
-        condition2 = ((not is_ellipsis) and (len(cell_vals) == (num_row)))#Without ellipsis, number of columns data should be num_col
-        if not(condition1 or condition2):
-            print("Number of rows should be equal to attribute setting")
-            
-
-        dic_rows['row'] = [{'inner_html':cell_val} for cell_val in cell_vals]
-        dic_rows['order_row'] = count
-        dic_rows['is_ellipsis'] = is_ellipsis
-        
-        
-        if choice['correct'] == 'true':
-            #which row should be placed in which place
-            place = json.loads(choice['place'])
-            answer_dic['row'].append(place)
-        else:
-            answer_dic['row'].append(None)
-        
-        lst_rows.append(dic_rows)
-    
-    
     data['params']['df_set'] = dict()
-    data['params']['df_set']['column_set'] = lst_colset
-    data['params']['df_set']['indice_set'] = lst_indice_set
-    data['params']['df_set']['row_set'] = lst_rows
+    data['params']['df_set']['column_set'] = {
+        'column': df_pivot.columns.tolist(),
+        'order_col': 0,
+        'is_ellipsis': False
+                                              }
+    data['params']['df_set']['indice_set'] = {
+        'index': [{'inner_html':cell_val} for cell_val in df_pivot.index.tolist()],
+        'order_index': 0,
+        'is_ellipsis': False
+                                              }
+    data['params']['df_set']['row_set'] = [
+        {
+            'row': [{'inner_html':cell_val} for cell_val in cell_vals],
+            'order_row': count,
+            'is_ellipsis': False
+        }
+        for count, cell_vals in enumerate(df_pivot.values.tolist())
+    ]
     data['params']['df_set']['width'] = col_width[num_col]
     data['params']['df_set']['question_uuid'] = uuid
-    data['correct_answers'][uuid] = answer_dic
+    data['correct_answers'][uuid] = df_pivot.to_json()
 
 
 def render(element_html, data):
