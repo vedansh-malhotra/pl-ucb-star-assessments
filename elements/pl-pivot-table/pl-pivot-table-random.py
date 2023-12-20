@@ -93,7 +93,7 @@ def prepare(element_html, data):
     data['params']['df_set']['width'] = col_width[num_col]
     data['params']['df_set']['question_uuid'] = uuid
     data['correct_answers'][uuid] = df_pivot.to_json()
-    # FIX CORRECT ANSWERS
+    # TODO FIX CORRECT ANSWERS
 
 
 def render(element_html, data):
@@ -108,7 +108,7 @@ def render(element_html, data):
 
     num_raw_dropzone = [{'order_zone':i} for i in range(0,len(num_col)-1)]
  
-    if data['panel'] == 'question':
+    if data['panel'] == 'question': # TODO EDIT mustache format
         if num_index == 1:
         
             html_params = {
@@ -199,7 +199,7 @@ def parse(element_html, data):
     
     data['submitted_answers'] = student_answer
 
-def grade(element_html, data):
+def grade(element_html, data): #Grade function isn't needed to be fixed. The point is storing answer data in structured way
     uuid = data['params']['df_set']['question_uuid']
     answer_dic = data['correct_answers'][uuid]
     num_row_dropzone = int(data['params']['num_col']) - 1
