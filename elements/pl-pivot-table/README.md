@@ -1,21 +1,23 @@
-# PL element for Data 100 
-This repository represents our work for a new element that is intended to be used as a formative assessment evaluating pivot table profiency for students in Data 100 and similar data science courses. Pivot table transformations have been considered as one of the more challenging data science concepts to master, indicating a need for a revamped method for students to practice and be assessed on the concepts. Our design philosophy for this element is based on the Mastery Learning model (https://doi.org/10.1145/3491140.3528289) developed by Professors Dan Garcia and Armando Fox. 
+# PL Element for Data 100
 
-As opposed to traditional paper-based or JupyterHub assignments, our new element incorporates randomization, drag-and-drop functionality, and instant feedback and grading. This would allow students to practice many versions of the same concept, and understand exactly where their knowledge gap lies. We ran a pilot study measuring the efficacy of the assignment, which demonstrated that introductory data science students found our element more intuitive than the JupyterHub version, and would prefer practicing pivot table transformations using our element compared to on JupyterHub. We are hopeful to implement a larger scale study to truly understand the effectiveness and scalability of our element.
+This repository represents our work on a new element designed for use as a formative assessment tool, evaluating students' proficiency in pivot table operations in Data 100 and similar data science courses. Pivot table transformations have often been considered one of the more challenging concepts in data science to master, highlighting the need for an innovative approach to practice and assess these concepts. Our design philosophy for this element is based on the Mastery Learning model developed by Professors Dan Garcia and Armando Fox, which can be found at this [link](https://doi.org/10.1145/3491140.3528289).
 
+In contrast to traditional paper-based or JupyterHub assignments, our new element incorporates randomization, drag-and-drop functionality, and provides instant feedback and grading. This approach enables students to practice various versions of the same concept and gain insights into their knowledge gaps. We conducted a pilot study to measure the effectiveness of this assignment, which demonstrated that introductory data science students found our element more intuitive than the JupyterHub version. They also expressed a preference for practicing pivot table transformations using our element as opposed to JupyterHub. We are optimistic about implementing a larger-scale study to comprehensively evaluate the effectiveness and scalability of our element.
 
-#  What does this element do?
-## 1. pl-plvot-table helps instructor to write questions for pandas pivot table operation practice.  
-## 2. Students will drag and drop from row, column, and index set provided to complete the dataframe. In other words, students will assemble dataframe like building lego block.  
+## What Does This Element Do?
 
+1. `pl-pivot-table` helps instructors create questions for Pandas pivot table operation practice.
+2. Students can drag and drop elements from the provided row, column, and index sets to complete the dataframe, similar to building code in Parsons' Problems.
 
-# Slide deck(Basic plan and idea of this project)
-https://docs.google.com/presentation/d/1K6x-VDJGsnKooS1rQ43vHO1SW6SUSoAYT_lzCyHY5l8/edit#slide=id.g2808ed675f2_1_10
+## Slide Deck (Basic Plan and Idea of This Project)
 
-# How can I author question?
-Here, we will create two questions with fews example: One question for single index dataframe, and the other for double-index dataframe.  
-**We will walk through ALL tutorials using below dataframe**
-```
+You can find more details about our project in this [slide deck](https://docs.google.com/presentation/d/1K6x-VDJGsnKooS1rQ43vHO1SW6SUSoAYT_lzCyHY5l8/edit#slide=id.g2808ed675f2_1_10).
+
+## How Can I Author a Question?
+
+We provide a few examples: one question for a single-indexed dataframe and the other for a double-indexed dataframe. We will use the following dataframe as a basis for all tutorials:
+
+```python
 df = pd.DataFrame({"A": ["foo", "foo", "foo", "foo", "foo",
                          "bar", "bar", "bar", "bar"],
                    "B": ["one", "one", "one", "two", "two",
@@ -28,48 +30,26 @@ df = pd.DataFrame({"A": ["foo", "foo", "foo", "foo", "foo",
                    "F": [2, 4, 5, 5, 6, 6, 8, 9, 9],
                    "G": [2, 1, 5, 3, 6, 6, 7, 7, 9]})
 ```
-![df](img_readme/dataframe.png)  
 
-### Example of single-indexed dataframe:
+![df](img_readme/dataframe.png)
 
-Let's create a question for this syntax  
-```
+### Example of a Single-Indexed Dataframe
+
+Let's create a question for this syntax:
+
+```python
 df.pivot_table(index='A', columns='B', values='G', aggfunc='sum')
 ```
-<br />
-<br />
-Dataframe after the operation will look like this. That is, this will be the answer of this question:  
-![answer1](img_readme/answer1.png)  
-<br />
-<br />
 
-Below html code is question.html of this question(questions/pivot-table_question1).
-```
+The dataframe after the operation i.e. the answer to the question will look like this:
+
+![answer1](img_readme/answer1.png)
+
+Below is the HTML code for this question (questions/pivot-table_question1):
+
+```html
 <pl-dataframe params-name="df" show-index="true" show-dimensions="false" digits="4"></pl-dataframe>
-<p>What will dataframe "df" looks like after pivot? Drag and drop your answer below</p>
-<pl-code language="python"> df.pivot_table(index='A', columns='B', values='G', aggfunc='sum') </pl-code>
-<pl-pivot-table col="3" row="2" index="1" multi-col="false" ellipsis="false">
-    <pl-column>
-        <pl-choice correct="false">B two one</pl-choice>
-        <pl-choice correct="false">B sum sum</pl-choice>
-        <pl-choice correct="true">B one two</pl-choice>
-        <pl-choice correct="false">B two two</pl-choice>
-    </pl-column>
-    <pl-index>
-        <pl-choice correct="false">A bar &nbsp;</pl-choice>
-        <pl-choice correct="false">A one two</pl-choice>
-        <pl-choice correct="true">A bar foo</pl-choice>
-        <pl-choice correct="false">B two one</pl-choice>
-    </pl-index>
-    <pl-row>
-        <pl-choice correct="true" place="1">13 8</pl-choice>
-        <pl-choice correct="false">4.0 7.0</pl-choice>
-        <pl-choice correct="true" place="2">16 9</pl-choice>
-        <pl-choice correct="false">7.0 3</pl-choice>
-    </pl-row>
-</pl-pivot-table>
-<pl-dataframe params-name="df" show-index="true" show-dimensions="false" digits="4"></pl-dataframe>
-<p>What will dataframe "df" looks like after pivot? Drag and drop your answer below</p>
+<p>What will the dataframe "df" look like after the pivot? Drag and drop your answer below.</p>
 <pl-code language="python"> df.pivot_table(index='A', columns='B', values='G', aggfunc='sum') </pl-code>
 <pl-pivot-table col="3" row="2" index="1" multi-col="false" ellipsis="false">
     <pl-column>
@@ -92,59 +72,32 @@ Below html code is question.html of this question(questions/pivot-table_question
     </pl-row>
 </pl-pivot-table>
 ```
-<br />
-<br />
-<br />
 
 ### pl-dataframe
-pl-dataframe is built in PL element. I used this element to decorate this question, but if there is any better way other than pl-dataframe, feel free to use it!
+
+`pl-dataframe` is a built-in PL element. We use this to visualize our dataframe, but feel free to use other elements that are more suitable.
+
 ### pl-code
-pl-code is also for decoration and built in PL element
+
+`pl-code` is also for question information and is a built-in PL element.
+
 ### pl-pivot-table
-This is an element we are going to learn about. There are 5 attibutes for this element: col, row, index, multi-col, ellipsis.<br />
 
-1. col  
-col attribute helps you set the number of column. In this example, it's set to 3.  
-This attribute will affect the number of cells in column. Max value of this attribute is 6 since more than 6 columns are easily garbled on the screen.<br />
+There are 5 attributes for this element: col, row, index, multi-col, ellipsis.
 
-![column_set](img_readme/column_set.png)<br />
-Take a look each column. Each column has three cells since col attribute is 3<br />
-<br />
-<br />
-![answer_form](img_readme/answer_form.png)<br />
-Take a look column dropzone. Dropzone has the same form having three cells<br />
-<br />
-<br />
-2. row  
-row attribute has similar function with the col attribute. Max possible value is also the same. However, the way number of rows in dropzone counted is different than column. I will explain why.<br />
+1. col: the number of columns in the final pivoted table.
+2. row: the number of rows that will be the final pivoted table.
+3. index: the number of the indices in the final pivoted table.
+4. multi-col: set to `true` if the pivot is on two columns, set to `false` otherwise
+5. ellipsis: truncates column and row pieces ellipsis if they become too long,
 
-Let's take a look of the answer dataframe(printed on Jupyter notebook) again.<br />
-![answer1_color](img_readme/answer1_color.png)<br />
-You will notice that there are some gaps between the starting point of row and column. In other words, two more virtual rows are needed to draw dataframe(As denoted by red). Thus, the total number of rows in dropzone will have 2 rows(virtual rows) more than the value you acutally entered<br />
-![row_set](img_readme/row_set.png)<br />
-Take a look how each vertical chunk of row looks like. It has one empty cell at the top. That is, due to the same reason from previous part, one more row(cell) is added. Why there aren't more than 2 virtual rows added but only one? This is because the place for highset cell is reserved for column-drag-and-drop. In other words, that virtual place at the highest cell of row will be place for column.<br />
-<br />
-3. index  
-index attribute is for setting number of index. In this example, we are making single index question. Maximum value of this attribute is 2. The reason why I didn't make triple index is it's not common to see triple index. However, I'm planning to expand the maximum value of index attribute in future.  
-![double-index](img_readme/double-index.png)  
-This will be index set you will see when you set this attribute to 2. You might have noticed that the width of index becomes narrower  
-![double-index-set](img_readme/double-index-set.png)  
-This will be dropzone you will see when you set this attribute to 2.  
-4. multi-col  
-This attribute will be explained at next example. For now, just keep in mind that this attribute takes boolean datatype. It will not work at all if you assign other than boolean.  
-
-5. ellipsis
-ellipsis attribute is made to overcome limitation of screensize and max value of col and row atrribute. When dataframe gets bigger, it will be impossible to draw all the cells in one screen. Ellipsis attribute will add ellipsis at the end of column and row. However, some authors may prefer to type ellipsis by hand instead of setting attribute once even though typing one by one taking more time. Thus, this attribute can be changed or removed after feedbacks from TAs, instructors, or anyone who is interested in this element.  
-![ellipsis](img_readme/ellipsis.png)  
-```
-<pl-pivot-table col="4" row="3" index="1" multi-col="false" ellipsis="true">
-```
-This is how columns and rows look like when ellipsis is set to true. Also, adding ellipsis means there will be one more place for column and row. Thus, you should add one on each col and row attribute. In this example, each col and row should be 4 and 3. Otherwise, PL will pop up error message.
-
-Now, let break down **pl-column**, **pl-index**, and **pl-row**. Each element creats columns in the column box, indice in the index box, and row in the row box. I will explain it further.  
+Building `pl-pivot-table` requires the usage of `pl-column`, `pl-index`, and `pl-row`.
 
 ### pl-column  
-```
+
+`pl-column` delineates column choices in the column box. Each choice is represented by `pl-choice` and each space-separated value within `pl-choice` ("B," "two," "one") represents one value in that row of columns. The `correct` attribute indicates whether the choice is correct or not.
+
+```html
 <pl-column>
     <pl-choice correct="false">B two one</pl-choice>
     <pl-choice correct="false">B sum sum</pl-choice>
@@ -152,22 +105,12 @@ Now, let break down **pl-column**, **pl-index**, and **pl-row**. Each element cr
     <pl-choice correct="false">B two two</pl-choice>
 </pl-column>
 ```
-Assume you want to makes a column in columns box that looks like below:  
-![col-choice](img_readme/col-choice.png)  
-Then, you may want to do like this:  
-```
-<pl-choice correct="false">Hello world !</pl-choice>
-```
-Each contiguous string("Hello", "world", "!") is stored in each cell, and space between strings will distinguish which one will be stored each independent cell. But, what if I want to type space between string? Would this element understand the space character as seperating cell? In fact, yes. It will. However, this element support escape character. You can use indicator \s inside string if you want to type a space character without cell seperating. So, If you want a space character between "He" and "llo"...  
-![col-choice-space](img_readme/col-choice-space.png)  
-What you want to do will be...:  
-```
-<pl-choice correct="false">He\sllo world !</pl-choice>
-```
-Now, I will explain "correct" attribute of column. correct attribute is for setting the correct answer. In this example, In the code above, you will see that the answer is third one setting its correct attribute as true. 
 
 ### pl-index  
-```
+
+`pl-row` delineates index choices in the index box. Each choice is represented by `pl-choice` and each space-separated value within `pl-choice` ("A," "bar," "foo") represents one value in that column of indices. Again, the `correct` attribute indicates whether the choice is correct or not.
+
+```html
 <pl-index>
     <pl-choice correct="false">A bar &nbsp;</pl-choice>
     <pl-choice correct="false">A one two</pl-choice>
@@ -175,10 +118,12 @@ Now, I will explain "correct" attribute of column. correct attribute is for sett
     <pl-choice correct="false">B two one</pl-choice>
 </pl-index>
 ```
-pl-index works pretty similar with pl-column. One difference is if you want to keep certain cell empty. Use &nbsp; instead of \s. It's just because string parsing logic behind this element. If you use \s, then the shape of index chices will be garbled.
 
 ### pl-row
-```
+
+`pl-row` represents row choices for values in the row box. It is somewhat different from the above two as students have to drag more than one row to solve the problem. To set the answer of the rows you need to set not only the `correct` field, but also the `place` field which represents the ordering of the choice from top to bottom, starting from 1.
+
+```html
 <pl-row>
     <pl-choice correct="true" place="1">13 8</pl-choice>
     <pl-choice correct="false">4.0 7.0</pl-choice>
@@ -186,33 +131,21 @@ pl-index works pretty similar with pl-column. One difference is if you want to k
     <pl-choice correct="false">7.0 3</pl-choice>
 </pl-row>
 ```
-pl-row is a little bit different since students have to drag more than one row to solve problem. To set the answer of rows, first, you need to set correct attribute of answer choices. In this example, first one and third one are answers. After then, you need to set which place the answer rows should be dropped between 1 to n(depending on what value you set for col attribute).  
-![row_drop](img_readme/row_drop.png)  
-The picture shows you an example of row dropzone-numbering. It has 1, 2, and 3 for each place of dropzone. If you set col attribute to 6, then you will see more places in row dropzone ending up numbering 1, 2, 3, 4, 5 and 6. The point is numbering of row dropzone doesn't start with 0. Keep in mind it starts from 1.  
 
-### Example of multi-column:
-Now, we want to creat a question for this operation.
-```
+### Example of multi-column
+
+To create a question for operations like this example:
+
+```html
 table = pd.pivot_table(df, values=['E', 'F','G'], index=['A'],
                        aggfunc={'E': "mean",
                                 'F': ["min", "max", "mean"],
                                 'G': np.median})
 ```
-<br />
-<br />
 
-Take a look at the answer of the dataframe. Did you notice some difference?  
-Two column are layered. That is...<br />
-![multi-col](img_readme/mul-col2.png)  
-  
-Now compare two dataframe below  
-![multi-col2](img_readme/mul-col2.png)  
-![multi-col1](img_readme/mul-col1.png)  
-The first one is the result of the operation above, and the second one is the result of an operation with aggfunc='sum', not with that many different values(functions) such as "mean", "min", "max", np.median.  
-Thus, to address this issue, multi-col attribute is made. When you set this attribute to true, you will get two different dropzones for columns  
-![two_col_dropzone](img_readme/two_col_dropzone.png)  
-After multi-col sets to true, you also need to set two answers for column dropzones. This is similar to pl-row. What you want to do will be something like below:  
-```
+we must account for the for the multiple columns in the resulting pivot table. Setting the `multi-col` attribute to true will get you two different dropzones for columns. You also need to set two correct choices for the column dropzones, similar to pl-row, like below:
+
+```html
 <pl-column>
     <pl-choice correct="true" place="1">&nbsp; E F &nbsp; &nbsp; G</pl-choice>
     <pl-choice correct="false">&nbsp; F G &nbsp; &nbsp; A</pl-choice>
@@ -221,11 +154,7 @@ After multi-col sets to true, you also need to set two answers for column dropzo
     <pl-choice correct="false">&nbsp; min max mean min mean</pl-choice>
 </pl-column>
 ```
-As you can see, there are two choices with correct attribute true and place attribute with number 1 and 2. Place 1 is the top of the column dropzone and place is the bottom of the dropzone
 
-# More examples?
-I made more examples at the folder to refer. In shorts, you will see four different patterns of questions: single-indexed and single column, single-indexed and multi column, double-indexed and single column, double-indexed and multi-column.
+### More examples?
 
-
-# What is pl-pivot-table-random.py
-pl-pivot-table-random.py is in-progress code for randomized questions generation. You can learn more by reading comments inside.
+We have included four different patterns of questions in the Data100 questions folder: single-indexed and single column, single-indexed and multi-column, double-indexed and single column, double-indexed and multi-column.
