@@ -155,6 +155,24 @@ we must account for the for the multiple columns in the resulting pivot table. S
 </pl-column>
 ```
 
+### How to customize column box, index box, or row box?
+Simply add an attribute "label" in the tag and the value of the attribute will be new name for your box. If you don't add any attribute on the tag, then it will show you default name for the box.
+```html
+<pl-column label="TYPE YOUR CUSTOM LABEL">
+    <pl-choice correct="true" place="1">&nbsp; E F &nbsp; &nbsp; G</pl-choice>
+    <pl-choice correct="false">&nbsp; F G &nbsp; &nbsp; A</pl-choice>
+    <pl-choice correct="false">&nbsp; E A &nbsp; &nbsp; G</pl-choice>
+    <pl-choice correct="true" place="2">&nbsp; mean max mean min median</pl-choice>
+    <pl-choice correct="false">&nbsp; min max mean min mean</pl-choice>
+</pl-column>
+```
+
+### How about dropzone?
+Name of dropzone can be customized by adding an attribute "dropzone".  
+```html
+<pl-pivot-table col="3" row="2" index="1" multi-col="false" ellipsis="false" dropzone="TYPE YOUR CUSTOM NAME">
+```
+
 ### More examples?
 
 We have included four different patterns of questions in the Data100 questions folder: single-indexed and single column, single-indexed and multi-column, double-indexed and single column, double-indexed and multi-column.
