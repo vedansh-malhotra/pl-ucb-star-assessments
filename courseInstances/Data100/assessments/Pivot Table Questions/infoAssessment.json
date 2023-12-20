@@ -14,11 +14,11 @@
     "zones": [{
         "title": "Practice",
         "questions": [
-            {"id": "Data100/pivot-table_question1", "points": 10, "triesPerVariant":99999, "maxPoints":10},
-            {"id": "Data100/pivot-table_question2", "points": 10, "triesPerVariant":99999, "maxPoints":10},
-            {"id": "Data100/pivot-table_question3", "points": 10, "triesPerVariant":99999, "maxPoints":10},
-            {"id": "Data100/pivot-table_question4", "points": 10, "triesPerVariant":99999, "maxPoints":10},
-            {"id": "Data100/pivot-table_question5", "points": 10, "triesPerVariant":99999, "maxPoints":10}
+            {"id": "Data100/pivot-table-question1", "points": 10, "triesPerVariant":99999, "maxPoints":10},
+            {"id": "Data100/pivot-table-question2", "points": 10, "triesPerVariant":99999, "maxPoints":10},
+            {"id": "Data100/pivot-table-question3", "points": 10, "triesPerVariant":99999, "maxPoints":10},
+            {"id": "Data100/pivot-table-question4", "points": 10, "triesPerVariant":99999, "maxPoints":10},
+            {"id": "Data100/pivot-table-question5", "points": 10, "triesPerVariant":99999, "maxPoints":10}
         ]
     }]
 }
