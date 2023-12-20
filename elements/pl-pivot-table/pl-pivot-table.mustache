@@ -1,12 +1,11 @@
 {{#question}}
-        <script>
-            var uuid = "{{uuid}}";
-            var num_row_dropzone = parseInt("{{num_row_dropzone_val}}");
-            var num_index = 2;
-            var is_multicol = "True" === "{{is_multicol}}";
-        </script>
+        <data hidden value="{{uuid}}"></data>
+        <data hidden value="{{num_row_dropzone_val}}"></data>
+        <data hidden value="{{num_index}}"></data>
+        <data hidden value="{{is_multicol}}"></data>
+
         <div class="container column-box">
-            <h2>Choose answer column here</h2>
+            <h2>{{answer_col_text}}</h2>
             {{#column_set}}
             <div class="row col-set" id="{{uuid}}" data-order="{{order_col}}">
                 {{#column}}
@@ -20,30 +19,46 @@
         </div>
 
         <div class="container index-box">
-            <h2>Choose answer index here</h2>
+            <h2>{{answer_index_text}}</h2>
             <div class="row">
                 {{#indice_set}}
-                <div class="col-md-1"{{{calibration}}}>
+                <div class="col-md-{{{width}}}">
                     <div class="index-set" id="{{uuid}}" data-order="{{order_index}}">
                         {{#index}}
                         <div class="row">
-                            <div class="col-md-12 index-cell" style="height: 30px;">{{{inner_html}}}</div>
+                            <div class="col-md-12 index-cell">{{{inner_html}}}</div>
                         </div>
                         {{/index}}
                         {{#is_ellipsis}}
                         <div class="row">
-                            <div class="col-md-12 index-cell" style="height: 30px;">...</div>
+                            <div class="col-md-12 index-cell">...</div>
                         </div>
                         {{/is_ellipsis}}
                     </div>
                 </div>
                 {{/indice_set}}
+                {{#indice_set_for_double}}
+                <div class="col-md-1 {{{calibration}}}">
+                    <div class="index-set" id="{{uuid}}" data-order="{{order_index}}">
+                        {{#index}}
+                        <div class="row">
+                            <div class="col-md-12 index-cell">{{{inner_html}}}</div>
+                        </div>
+                        {{/index}}
+                        {{#is_ellipsis}}
+                        <div class="row">
+                            <div class="col-md-12 index-cell">...</div>
+                        </div>
+                        {{/is_ellipsis}}
+                    </div>
+                </div>
+                {{/indice_set_for_double}}
             </div>
 
         </div>
 
         <div class="container row-box">
-            <h2>Choose answer row here</h2>
+            <h2>{{answer_row_text}}</h2>
             
             <div class="row">
                 {{#row_set}}
@@ -69,7 +84,7 @@
         </div>
 
         <div class="container drop-zone">
-            <h2>Drop your answer here</h2>
+            <h2>{{anwer_drop_zone}}</h2>
             <div class="row">
                 {{#num_col}}
                 <div class="col-md-{{{width}}} drop-zone-col" col_order="0">Column</div>
@@ -84,13 +99,21 @@
             {{/is_multicol}}
             {{#num_row}}
             <div class="row">
-                <div class="col-md-1 drop-zone-index1"{{{calibration}}}>Index</div>
-                <div class="col-md-1 drop-zone-index2"{{{calibration}}}>Index</div>
+                <div class="col-md-{{{width}}} drop-zone-index">Index</div>
                 {{#num_row_dropzone}}
                 <div class="col-md-{{{width}}} drop-zone-row" order="{{{order_zone}}}">&nbsp</div>
                 {{/num_row_dropzone}}
             </div>
             {{/num_row}}
+            {{#num_row_for_double}}
+            <div class="row">
+                <div class="col-md-1 drop-zone-index1 {{{calibration}}}">Index</div>
+                <div class="col-md-1 drop-zone-index2 {{{calibration}}}">Index</div>
+                {{#num_row_dropzone}}
+                <div class="col-md-{{{width}}} drop-zone-row" order="{{{order_zone}}}">&nbsp</div>
+                {{/num_row_dropzone}}
+            </div>
+            {{/num_row_for_double}}
         </div>
 
         <input id="{{uuid}}-input" type="hidden" name="{{uuid}}-input" value="{&quot;column&quot;:null,&quot;index&quot;:null}"/>
@@ -104,3 +127,32 @@
         </div>
 {{/question}}
 
+{{#submission}}
+    {{#index}}
+        <p>Chosen index is incorrect</p>
+    {{/index}}
+
+    {{#index1}}
+        <p>First index is incorrect</p>
+    {{/index1}}
+
+    {{#index2}}
+        <p>Second index is incorrect</p>
+    {{/index2}}
+
+    {{#column}}
+        <p>Chosen column is incorrect</p>
+    {{/column}}
+    {{#column1}}
+        <p>First column is incorrect</p>
+    {{/column1}}
+    {{#column2}}
+        <p>Second column is incorrect</p>
+    {{/column2}}
+    {{#row}}
+        <p>Your row arrangement is incorrect</p>
+    {{/row}}
+{{/submission}}
+
+{{#answer}}
+{{/answer}}

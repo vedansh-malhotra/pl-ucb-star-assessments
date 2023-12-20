@@ -1,5 +1,11 @@
 $(function() {
     //Change selection method in future to specify the current question(uuid)
+    data_list = document.querySelectorAll("data");
+    var uuid = data_list[0].value;
+    var num_row_dropzone = parseInt(data_list[1].value);
+    var num_index = parseInt(data_list[2].value);
+    var is_multicol = "True" === data_list[3].value;
+
     var row = Array.from({length: num_row_dropzone}, x => null);
     var answer = {'column':null,'index':null,'rows':row};
 
@@ -273,7 +279,6 @@ $(function() {
 
         }
     });
-
     if(num_index === 1){
         if(is_multicol){
             $("#unique").click(function(){
@@ -281,7 +286,7 @@ $(function() {
                 let cols2 = document.querySelectorAll(".drop-zone-col2");
                 let indice = document.querySelectorAll(".drop-zone-index");
                 let rows = document.querySelectorAll(".drop-zone-row");
-
+                console.log("sdsddssd");
                 cols1.forEach(ele => {
                     $(ele).removeClass('dropped-color-col');
                     ele.textContent = "Column";
@@ -310,7 +315,7 @@ $(function() {
                 let cols1 = document.querySelectorAll(".drop-zone-col");
                 let indice = document.querySelectorAll(".drop-zone-index");
                 let rows = document.querySelectorAll(".drop-zone-row");
-
+                console.log("sdsddssd");
                 cols1.forEach(ele => {
                     $(ele).removeClass('dropped-color-col');
                     ele.textContent = "Column";

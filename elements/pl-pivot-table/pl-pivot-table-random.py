@@ -1,3 +1,15 @@
+###############################################
+#          This code is in-progress           #
+# It's designed for randomized questions      #
+###############################################
+#   Two parts needed to be done
+#   1. Formatting for mustache
+#   2. Grading
+#   
+#   Implemented done 
+#   1. Random values generating for each cell
+#
+
 from typing import cast
 import chevron
 import lxml.html
@@ -6,7 +18,6 @@ import pandas as pd
 import prairielearn as pl
 from bs4 import BeautifulSoup
 import numpy as np
-
 
 def prepare(element_html, data):
     soup = BeautifulSoup(element_html)
@@ -96,6 +107,7 @@ def render(element_html, data):
     num_row = [True for i in range(0,num_row+1)]
 
     num_raw_dropzone = [{'order_zone':i} for i in range(0,len(num_col)-1)]
+ 
     if data['panel'] == 'question':
         if num_index == 1:
         
@@ -117,20 +129,11 @@ def render(element_html, data):
                 "answer_drop_text": "Drop selected answers here"
             }
 
-            with open('pl-pivot-table-single.mustache', 'r') as f:
+            with open('pl-pivot-table.mustache', 'r') as f:
                 return chevron.render(f, html_params).strip()
                 
         elif num_index == 2:
             
-            if int(width) >= 3:
-                return_text = ' style="width: 12.499999995%; flex: 0 0 12.499%; max-width: 12.499%;"'
-                #return_dic = {'calibration': return_text}
-                #num_row = list(map(lambda x: return_dic,num_row))
-            else:
-                return_text = ' style="font-size: 10px;"'
-                #return_dic = {'calibration': return_text}
-                #num_row = list(map(lambda x: return_dic,num_row))
-
         
             html_params = {
                 'question':True,
@@ -151,7 +154,7 @@ def render(element_html, data):
                 "answer_drop_text": "Drop selected answers here"
             }
 
-            with open('pl-pivot-table-double.mustache', 'r') as f:
+            with open('pl-pivot-table.mustache', 'r') as f:
                 return chevron.render(f, html_params).strip()
     
     if data['panel'] == 'submission':

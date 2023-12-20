@@ -17,10 +17,15 @@ border-style: solid;
 margin-bottom: 40px;
 }
 
-
 .index-set, .row-set{
 margin-right: 10px;
 cursor: grab;
+}
+
+.calibration{
+width: 12.499999995%;
+flex: 0 0 12.499%;
+max-width: 12.499%;
 }
 
 .drop-zone-col, .drop-zone-col2, .drop-zone-index,.drop-zone-index1,.drop-zone-index2, .drop-zone-row{
